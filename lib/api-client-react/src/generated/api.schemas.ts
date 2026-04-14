@@ -8,3 +8,60 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface Lead {
+  id: number;
+  name: string;
+  phone: string;
+  /** @nullable */
+  email?: string | null;
+  /** Where the lead came from: brochure, site-visit, whatsapp, exit-popup */
+  source: string;
+  /** Lead status: new, contacted, qualified, lost */
+  status: string;
+  /** @nullable */
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateLeadBody {
+  name: string;
+  phone: string;
+  /** @nullable */
+  email?: string | null;
+  /** Where the lead came from: brochure, site-visit, whatsapp, exit-popup */
+  source: string;
+}
+
+export interface UpdateLeadBody {
+  status?: string;
+  /** @nullable */
+  notes?: string | null;
+}
+
+export type LeadStatsByStatus = {
+  new: number;
+  contacted: number;
+  qualified: number;
+  lost: number;
+};
+
+export type LeadStatsBySource = {
+  brochure: number;
+  "site-visit": number;
+  whatsapp: number;
+  "exit-popup": number;
+};
+
+export interface LeadStats {
+  total: number;
+  newToday: number;
+  byStatus: LeadStatsByStatus;
+  bySource: LeadStatsBySource;
+}
+
+export type ListLeadsParams = {
+  status?: string;
+  source?: string;
+};

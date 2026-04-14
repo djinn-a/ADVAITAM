@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { MapPin, Trees, Home as HomeIcon, Bath, CheckCircle2, ChevronRight, X, Download, MessageCircle, Phone, ArrowRight } from "lucide-react";
+import { useCreateLead } from "@workspace/api-client-react";
 
 export default function Home() {
   const { toast } = useToast();
@@ -12,6 +13,8 @@ export default function Home() {
   const [villaCount, setVillaCount] = useState(17);
   const countRef = useRef<HTMLDivElement>(null);
   
+  const createLead = useCreateLead();
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 100);
@@ -47,11 +50,55 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
-  const handleBrochureSubmit = (e: React.FormEvent) => {
+  const handleBrochureSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast({
-      title: "Brochure sent successfully",
-      description: "Please check your email and WhatsApp for the details.",
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+    const phone = formData.get("phone") as string;
+    const email = formData.get("email") as string;
+
+    createLead.mutate({
+      data: { name, phone, email, source: "brochure" }
+    }, {
+      onSuccess: () => {
+        toast({
+          title: "Thank you!",
+          description: "We'll reach out to you shortly.",
+        });
+        (e.target as HTMLFormElement).reset();
+      },
+      onError: (error) => {
+        toast({
+          title: "Submission failed",
+          description: error.message || "There was an error submitting your request.",
+          variant: "destructive",
+        });
+      }
+    });
+  };
+
+  const handleExitIntentSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const phone = formData.get("phone") as string;
+
+    createLead.mutate({
+      data: { name: "Exit Intent Visitor", phone, source: "exit-popup" }
+    }, {
+      onSuccess: () => {
+        setShowExitIntent(false);
+        toast({
+          title: "Thank you!",
+          description: "We'll reach out to you shortly.",
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: "Submission failed",
+          description: error.message || "There was an error submitting your request.",
+          variant: "destructive",
+        });
+      }
     });
   };
 
@@ -257,18 +304,18 @@ export default function Home() {
               <form onSubmit={handleBrochureSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Full Name</label>
-                  <Input required placeholder="John Doe" className="bg-card border-border h-12" />
+                  <Input required name="name" placeholder="John Doe" className="bg-card border-border h-12" disabled={createLead.isPending} />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Phone Number</label>
-                  <Input required type="tel" placeholder="+91" className="bg-card border-border h-12" />
+                  <Input required name="phone" type="tel" placeholder="+91" className="bg-card border-border h-12" disabled={createLead.isPending} />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Email Address</label>
-                  <Input required type="email" placeholder="john@example.com" className="bg-card border-border h-12" />
+                  <Input name="email" type="email" placeholder="john@example.com" className="bg-card border-border h-12" disabled={createLead.isPending} />
                 </div>
-                <Button type="submit" className="w-full h-12 text-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-                  Download Brochure
+                <Button type="submit" disabled={createLead.isPending} className="w-full h-12 text-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+                  {createLead.isPending ? "Submitting..." : "Download Brochure"}
                 </Button>
                 
                 <div className="relative my-6">
@@ -320,10 +367,10 @@ export default function Home() {
             </button>
             <h3 className="text-3xl font-serif font-bold mb-2">Wait!</h3>
             <p className="text-xl mb-6">Want <span className="text-primary font-bold">₹15L Discount</span> Details?</p>
-            <form onSubmit={(e) => { e.preventDefault(); setShowExitIntent(false); toast({ title: "Offer Unlocked", description: "Our advisor will contact you shortly." }); }} className="space-y-4">
-              <Input required type="tel" placeholder="Enter your phone number" className="h-14 text-lg bg-background" />
-              <Button type="submit" className="w-full h-14 text-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-                Unlock Offer
+            <form onSubmit={handleExitIntentSubmit} className="space-y-4">
+              <Input required name="phone" type="tel" placeholder="Enter your phone number" className="h-14 text-lg bg-background" disabled={createLead.isPending} />
+              <Button type="submit" disabled={createLead.isPending} className="w-full h-14 text-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+                {createLead.isPending ? "Submitting..." : "Unlock Offer"}
               </Button>
             </form>
           </div>

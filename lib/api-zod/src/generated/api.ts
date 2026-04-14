@@ -14,3 +14,120 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * @summary List all leads
+ */
+export const ListLeadsQueryParams = zod.object({
+  status: zod.coerce.string().optional(),
+  source: zod.coerce.string().optional(),
+});
+
+export const ListLeadsResponseItem = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  phone: zod.string(),
+  email: zod.string().nullish(),
+  source: zod
+    .string()
+    .describe(
+      "Where the lead came from: brochure, site-visit, whatsapp, exit-popup",
+    ),
+  status: zod.string().describe("Lead status: new, contacted, qualified, lost"),
+  notes: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+  updatedAt: zod.coerce.date(),
+});
+export const ListLeadsResponse = zod.array(ListLeadsResponseItem);
+
+/**
+ * @summary Submit a new lead
+ */
+export const CreateLeadBody = zod.object({
+  name: zod.string(),
+  phone: zod.string(),
+  email: zod.string().nullish(),
+  source: zod
+    .string()
+    .describe(
+      "Where the lead came from: brochure, site-visit, whatsapp, exit-popup",
+    ),
+});
+
+/**
+ * @summary Get lead summary statistics
+ */
+export const GetLeadStatsResponse = zod.object({
+  total: zod.number(),
+  newToday: zod.number(),
+  byStatus: zod.object({
+    new: zod.number(),
+    contacted: zod.number(),
+    qualified: zod.number(),
+    lost: zod.number(),
+  }),
+  bySource: zod.object({
+    brochure: zod.number(),
+    "site-visit": zod.number(),
+    whatsapp: zod.number(),
+    "exit-popup": zod.number(),
+  }),
+});
+
+/**
+ * @summary Get a single lead
+ */
+export const GetLeadParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetLeadResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  phone: zod.string(),
+  email: zod.string().nullish(),
+  source: zod
+    .string()
+    .describe(
+      "Where the lead came from: brochure, site-visit, whatsapp, exit-popup",
+    ),
+  status: zod.string().describe("Lead status: new, contacted, qualified, lost"),
+  notes: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+  updatedAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Update lead status or notes
+ */
+export const UpdateLeadParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateLeadBody = zod.object({
+  status: zod.string().optional(),
+  notes: zod.string().nullish(),
+});
+
+export const UpdateLeadResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  phone: zod.string(),
+  email: zod.string().nullish(),
+  source: zod
+    .string()
+    .describe(
+      "Where the lead came from: brochure, site-visit, whatsapp, exit-popup",
+    ),
+  status: zod.string().describe("Lead status: new, contacted, qualified, lost"),
+  notes: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+  updatedAt: zod.coerce.date(),
+});
+
+/**
+ * @summary Delete a lead
+ */
+export const DeleteLeadParams = zod.object({
+  id: zod.coerce.number(),
+});

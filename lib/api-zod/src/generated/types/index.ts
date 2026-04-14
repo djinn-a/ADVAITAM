@@ -6,4 +6,11 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from "./createLeadBody";
 export * from "./healthStatus";
+export * from "./lead";
+export * from "./leadStats";
+export * from "./leadStatsBySource";
+export * from "./leadStatsByStatus";
+export * from "./listLeadsParams";
+export * from "./updateLeadBody";
