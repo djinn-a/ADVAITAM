@@ -2,7 +2,19 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { MapPin, Trees, Home as HomeIcon, Bath, CheckCircle2, ChevronRight, X, Download, MessageCircle, Phone, ArrowRight } from "lucide-react";
+import {
+  MapPin,
+  Trees,
+  Home as HomeIcon,
+  Bath,
+  CheckCircle2,
+  ChevronRight,
+  X,
+  Download,
+  MessageCircle,
+  Phone,
+  ArrowRight,
+} from "lucide-react";
 import { useCreateLead } from "@workspace/api-client-react";
 
 export default function Home() {
@@ -12,7 +24,7 @@ export default function Home() {
   const [hasShownExitIntent, setHasShownExitIntent] = useState(false);
   const [villaCount, setVillaCount] = useState(17);
   const countRef = useRef<HTMLDivElement>(null);
-  
+
   const createLead = useCreateLead();
 
   useEffect(() => {
@@ -57,24 +69,28 @@ export default function Home() {
     const phone = formData.get("phone") as string;
     const email = formData.get("email") as string;
 
-    createLead.mutate({
-      data: { name, phone, email, source: "brochure" }
-    }, {
-      onSuccess: () => {
-        toast({
-          title: "Thank you!",
-          description: "We'll reach out to you shortly.",
-        });
-        (e.target as HTMLFormElement).reset();
+    createLead.mutate(
+      {
+        data: { name, phone, email, source: "brochure" },
       },
-      onError: (error) => {
-        toast({
-          title: "Submission failed",
-          description: error.message || "There was an error submitting your request.",
-          variant: "destructive",
-        });
-      }
-    });
+      {
+        onSuccess: () => {
+          toast({
+            title: "Thank you!",
+            description: "We'll reach out to you shortly.",
+          });
+          (e.target as HTMLFormElement).reset();
+        },
+        onError: (error) => {
+          toast({
+            title: "Submission failed",
+            description:
+              error.message || "There was an error submitting your request.",
+            variant: "destructive",
+          });
+        },
+      },
+    );
   };
 
   const handleExitIntentSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -82,24 +98,28 @@ export default function Home() {
     const formData = new FormData(e.currentTarget);
     const phone = formData.get("phone") as string;
 
-    createLead.mutate({
-      data: { name: "Exit Intent Visitor", phone, source: "exit-popup" }
-    }, {
-      onSuccess: () => {
-        setShowExitIntent(false);
-        toast({
-          title: "Thank you!",
-          description: "We'll reach out to you shortly.",
-        });
+    createLead.mutate(
+      {
+        data: { name: "Exit Intent Visitor", phone, source: "exit-popup" },
       },
-      onError: (error) => {
-        toast({
-          title: "Submission failed",
-          description: error.message || "There was an error submitting your request.",
-          variant: "destructive",
-        });
-      }
-    });
+      {
+        onSuccess: () => {
+          setShowExitIntent(false);
+          toast({
+            title: "Thank you!",
+            description: "We'll reach out to you shortly.",
+          });
+        },
+        onError: (error) => {
+          toast({
+            title: "Submission failed",
+            description:
+              error.message || "There was an error submitting your request.",
+            variant: "destructive",
+          });
+        },
+      },
+    );
   };
 
   const scrollToContact = () => {
@@ -109,13 +129,20 @@ export default function Home() {
   return (
     <div className="min-h-[100dvh] bg-background text-foreground overflow-x-hidden selection:bg-primary/30">
       {/* Sticky Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-background/90 backdrop-blur-md border-b border-border/50 py-4' : 'bg-transparent py-6'}`}>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/90 backdrop-blur-md border-b border-border/50 py-4" : "bg-transparent py-6"}`}
+      >
         <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Trees className="w-8 h-8 text-primary" />
-            <span className="font-serif text-2xl font-bold tracking-wide">ADVAITAM</span>
+            <span className="font-serif text-2xl font-bold tracking-wide">
+              ADVAITAM
+            </span>
           </div>
-          <Button onClick={scrollToContact} className="hidden md:flex bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
+          <Button
+            onClick={scrollToContact}
+            className="hidden md:flex bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+          >
             Get Brochure
           </Button>
         </div>
@@ -124,36 +151,53 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[100dvh] flex items-center pt-20">
         <div className="absolute inset-0 z-0">
-          <img src="/hero-bg.png" alt="Luxury forest villa aerial view" className="w-full h-full object-cover" />
+          <img
+            src="/hero-bg.png"
+            alt="Luxury forest villa aerial view"
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background"></div>
         </div>
-        
+
         <div className="container relative z-10 mx-auto px-4 md:px-6">
           <div className="max-w-3xl space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-background/50 backdrop-blur-sm text-primary text-sm font-medium tracking-wide uppercase">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
               Limited Inventory • High ROI Potential
             </div>
-            
+
             <h1 className="text-5xl md:text-7xl font-serif font-bold leading-tight">
-              Own a Private Forest Villa in <span className="text-gradient">Jim Corbett</span>
+              Own a Private Forest Villa in{" "}
+              <span className="text-gradient">Jim Corbett</span>
             </h1>
-            
+
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl leading-relaxed">
-              Only 17 Ultra-Luxury Villas with Private Pool, Rooftop Garden & Airbnb Income Potential — Just 5 Hours from Delhi NCR.
+              Only 17 Ultra-Luxury Villas with Private Pool, Rooftop Garden &
+              Airbnb Income Potential — Just 5 Hours from Delhi NCR.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Button size="lg" onClick={scrollToContact} className="text-lg h-14 px-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(217,119,6,0.3)]">
+              <Button
+                size="lg"
+                onClick={scrollToContact}
+                className="text-lg h-14 px-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(217,119,6,0.3)]"
+              >
                 Get Brochure <Download className="ml-2 w-5 h-5" />
               </Button>
-              <Button size="lg" variant="outline" className="text-lg h-14 px-8 border-primary/30 hover:bg-primary/10">
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg h-14 px-8 border-primary/30 hover:bg-primary/10"
+              >
                 Book Site Visit <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </div>
-            
+
             <p className="text-sm text-muted-foreground pt-4 flex items-center gap-2">
-              Starting ₹1.35 Cr <span className="text-xs px-2 py-0.5 bg-secondary rounded-sm">Premium Gated Community</span>
+              Starting ₹1.35 Cr{" "}
+              <span className="text-xs px-2 py-0.5 bg-secondary rounded-sm">
+                Premium Gated Community
+              </span>
             </p>
           </div>
         </div>
@@ -164,17 +208,22 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
-              <h2 className="text-4xl font-serif font-bold">The Definition of <span className="text-primary italic">Exclusive</span></h2>
+              <h2 className="text-4xl font-serif font-bold">
+                The Definition of{" "}
+                <span className="text-primary italic">Exclusive</span>
+              </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Advaitam is not a resort. It is a private sanctuary. Designed for those who seek the silence of the deep woods without compromising on uncompromising luxury. 
+                Advaitam is not a resort. It is a private sanctuary. Designed
+                for those who seek the silence of the deep woods without
+                compromising on uncompromising luxury.
               </p>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6">
                 {[
                   "Private Swimming Pool in Every Villa",
                   "Rooftop Garden Terrace",
                   "2070 Sq. Ft. Built-Up Area",
-                  "Premium Finishes & Modular Kitchen"
+                  "Premium Finishes & Modular Kitchen",
                 ].map((feature, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <CheckCircle2 className="w-6 h-6 text-primary shrink-0" />
@@ -183,19 +232,34 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden relative shadow-2xl">
-                <img src="/villa-exterior.png" alt="Villa exterior with pool" className="w-full h-full object-cover" />
+                <img
+                  src="/villa-exterior.png"
+                  alt="Villa exterior with pool"
+                  className="w-full h-full object-cover"
+                />
                 <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl"></div>
               </div>
-              <div ref={countRef} className="absolute -bottom-8 -left-8 bg-card border border-border p-6 rounded-xl shadow-2xl animate-in slide-in-from-bottom-8">
-                <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">Current Availability</p>
+              <div
+                ref={countRef}
+                className="absolute -bottom-8 -left-8 bg-card border border-border p-6 rounded-xl shadow-2xl animate-in slide-in-from-bottom-8"
+              >
+                <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
+                  Current Availability
+                </p>
                 <p className="text-5xl font-serif font-bold text-primary flex items-baseline gap-2">
-                  {villaCount} <span className="text-lg font-sans text-foreground font-normal">of 17 Left</span>
+                  {villaCount}{" "}
+                  <span className="text-lg font-sans text-foreground font-normal">
+                    of 17 Left
+                  </span>
                 </p>
                 <div className="w-full bg-secondary h-2 mt-4 rounded-full overflow-hidden">
-                  <div className="bg-primary h-full rounded-full transition-all duration-1000" style={{ width: `${(villaCount/17)*100}%` }}></div>
+                  <div
+                    className="bg-primary h-full rounded-full transition-all duration-1000"
+                    style={{ width: `${(villaCount / 17) * 100}%` }}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -208,24 +272,47 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="order-2 lg:order-1 relative h-[600px] rounded-2xl overflow-hidden">
-              <img src="/villa-interior.png" alt="Villa interior" className="w-full h-full object-cover" />
+              <img
+                src="/villa-interior.png"
+                alt="Villa interior"
+                className="w-full h-full object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
             </div>
-            
+
             <div className="order-1 lg:order-2 space-y-8">
-              <h2 className="text-4xl md:text-5xl font-serif font-bold">Where the Forest <br/>Meets the Firelight</h2>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold">
+                Where the Forest <br />
+                Meets the Firelight
+              </h2>
               <p className="text-xl text-muted-foreground">
-                Floor-to-ceiling glass erases the boundary between your living room and the ancient woods. Every material—from rich timber to raw stone—has been chosen to ground you in nature while enveloping you in warmth.
+                Floor-to-ceiling glass erases the boundary between your living
+                room and the ancient woods. Every material—from rich timber to
+                raw stone—has been chosen to ground you in nature while
+                enveloping you in warmth.
               </p>
-              
+
               <div className="p-6 bg-secondary/50 rounded-xl border border-border/50 backdrop-blur-sm">
-                <h3 className="font-serif text-2xl mb-4 text-primary">Location Advantages</h3>
+                <h3 className="font-serif text-2xl mb-4 text-primary">
+                  Location Advantages
+                </h3>
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-3"><MapPin className="w-5 h-5 text-muted-foreground" /> ~5 Hours Drive from Delhi NCR</li>
-                  <li className="flex items-center gap-3"><MapPin className="w-5 h-5 text-muted-foreground" /> 10 Minutes from Corbett Falls</li>
-                  <li className="flex items-center gap-3"><MapPin className="w-5 h-5 text-muted-foreground" /> 30 Minutes from Kainchi Dham</li>
+                  <li className="flex items-center gap-3">
+                    <MapPin className="w-5 h-5 text-muted-foreground" /> ~5
+                    Hours Drive from Delhi NCR
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <MapPin className="w-5 h-5 text-muted-foreground" /> 10
+                    Minutes from Corbett Falls
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <MapPin className="w-5 h-5 text-muted-foreground" /> 30
+                    Minutes from Kainchi Dham
+                  </li>
                 </ul>
-                <p className="mt-6 text-sm font-medium italic text-muted-foreground">"Close enough for convenience. Far enough for peace."</p>
+                <p className="mt-6 text-sm font-medium italic text-muted-foreground">
+                  "Close enough for convenience. Far enough for peace."
+                </p>
               </div>
             </div>
           </div>
@@ -237,22 +324,49 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row gap-12 items-center">
             <div className="flex-1 space-y-6">
-              <h2 className="text-4xl font-serif font-bold">A Legacy Investment</h2>
+              <h2 className="text-4xl font-serif font-bold">
+                A Legacy Investment
+              </h2>
               <p className="text-lg text-muted-foreground">
-                Beyond a weekend escape, Advaitam is a high-yield asset. With professional property management, your villa works for you when you're not there.
+                Beyond a weekend escape, Advaitam is a high-yield asset. With
+                professional property management, your villa works for you when
+                you're not there.
               </p>
               <ul className="space-y-4">
-                <li className="flex items-start gap-3"><ChevronRight className="w-5 h-5 text-primary shrink-0 mt-0.5" /> <span className="font-medium text-lg">10–15% Expected Appreciation</span></li>
-                <li className="flex items-start gap-3"><ChevronRight className="w-5 h-5 text-primary shrink-0 mt-0.5" /> <span className="font-medium text-lg">High Demand for Luxury Airbnb Stays</span></li>
-                <li className="flex items-start gap-3"><ChevronRight className="w-5 h-5 text-primary shrink-0 mt-0.5" /> <span className="font-medium text-lg">Hassle-Free Professional Management</span></li>
+                <li className="flex items-start gap-3">
+                  <ChevronRight className="w-5 h-5 text-primary shrink-0 mt-0.5" />{" "}
+                  <span className="font-medium text-lg">
+                    10–15% Expected Appreciation
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <ChevronRight className="w-5 h-5 text-primary shrink-0 mt-0.5" />{" "}
+                  <span className="font-medium text-lg">
+                    High Demand for Luxury Airbnb Stays
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <ChevronRight className="w-5 h-5 text-primary shrink-0 mt-0.5" />{" "}
+                  <span className="font-medium text-lg">
+                    Hassle-Free Professional Management
+                  </span>
+                </li>
               </ul>
-              <Button onClick={scrollToContact} variant="outline" className="mt-4 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+              <Button
+                onClick={scrollToContact}
+                variant="outline"
+                className="mt-4 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              >
                 Get Rental Income Projection
               </Button>
             </div>
-            
+
             <div className="flex-1">
-              <img src="/rooftop-terrace.png" alt="Rooftop terrace" className="w-full h-auto rounded-2xl shadow-xl" />
+              <img
+                src="/rooftop-terrace.png"
+                alt="Rooftop terrace"
+                className="w-full h-auto rounded-2xl shadow-xl"
+              />
             </div>
           </div>
         </div>
@@ -265,10 +379,14 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-card p-8 md:p-12 rounded-3xl border border-border shadow-2xl">
             <div className="space-y-8">
               <div>
-                <h2 className="text-3xl font-serif font-bold mb-2">Claim Your Sanctuary</h2>
-                <p className="text-muted-foreground">Only 17 Villas. Once Sold, Gone Forever.</p>
+                <h2 className="text-3xl font-serif font-bold mb-2">
+                  Claim Your Sanctuary
+                </h2>
+                <p className="text-muted-foreground">
+                  Only 17 Villas. Once Sold, Gone Forever.
+                </p>
               </div>
-              
+
               <div className="space-y-4 bg-secondary/50 p-6 rounded-xl">
                 <div className="flex justify-between items-center text-muted-foreground line-through">
                   <span>Base Price</span>
@@ -283,9 +401,11 @@ export default function Home() {
                   <span>Offer Price</span>
                   <span>₹1.35 Cr</span>
                 </div>
-                <p className="text-xs text-center text-muted-foreground mt-4">*Applicable on Limited Villas Only</p>
+                <p className="text-xs text-center text-muted-foreground mt-4">
+                  *Applicable on Limited Villas Only
+                </p>
               </div>
-              
+
               <div className="space-y-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-3">
                   <Phone className="w-4 h-4" /> +91 92175 67788
@@ -294,37 +414,77 @@ export default function Home() {
                   <MessageCircle className="w-4 h-4" /> info@advaitamvillas.com
                 </div>
                 <div className="flex items-center gap-3">
-                  <MapPin className="w-4 h-4" /> Site: Jim Corbett, Uttarakhand | Corp: Noida
+                  <MapPin className="w-4 h-4" /> Site: Jim Corbett, Uttarakhand
+                  | Corp: Noida
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-background p-8 rounded-2xl border border-border">
-              <h3 className="text-xl font-bold mb-6">Download Full Brochure & Floor Plans</h3>
+              <h3 className="text-xl font-bold mb-6">
+                Download Full Brochure & Floor Plans
+              </h3>
               <form onSubmit={handleBrochureSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Full Name</label>
-                  <Input required name="name" placeholder="John Doe" className="bg-card border-border h-12" disabled={createLead.isPending} />
+                  <Input
+                    required
+                    name="name"
+                    placeholder="John Doe"
+                    className="bg-card border-border h-12"
+                    disabled={createLead.isPending}
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Phone Number</label>
-                  <Input required name="phone" type="tel" placeholder="+91" className="bg-card border-border h-12" disabled={createLead.isPending} />
+                  <Input
+                    required
+                    name="phone"
+                    type="tel"
+                    placeholder="+91"
+                    className="bg-card border-border h-12"
+                    disabled={createLead.isPending}
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Email Address</label>
-                  <Input name="email" type="email" placeholder="john@example.com" className="bg-card border-border h-12" disabled={createLead.isPending} />
+                  <Input
+                    name="email"
+                    type="email"
+                    placeholder="john@example.com"
+                    className="bg-card border-border h-12"
+                    disabled={createLead.isPending}
+                  />
                 </div>
-                <Button type="submit" disabled={createLead.isPending} className="w-full h-12 text-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+                <Button
+                  type="submit"
+                  disabled={createLead.isPending}
+                  className="w-full h-12 text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+                >
                   {createLead.isPending ? "Submitting..." : "Download Brochure"}
                 </Button>
-                
+
                 <div className="relative my-6">
-                  <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border"></span></div>
-                  <div className="relative flex justify-center text-xs uppercase"><span className="bg-background px-2 text-muted-foreground">or</span></div>
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-border"></span>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      or
+                    </span>
+                  </div>
                 </div>
-                
-                <Button type="button" variant="outline" className="w-full h-12 border-green-600 text-green-500 hover:bg-green-600/10 hover:text-green-400" onClick={() => window.open('https://wa.me/919217567788', '_blank')}>
-                  <MessageCircle className="mr-2 w-5 h-5" /> Talk to Advisor on WhatsApp
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-12 border-green-600 text-green-500 hover:bg-green-600/10 hover:text-green-400"
+                  onClick={() =>
+                    window.open("https://wa.me/919217567788", "_blank")
+                  }
+                >
+                  <MessageCircle className="mr-2 w-5 h-5" /> Talk to Advisor on
+                  WhatsApp
                 </Button>
               </form>
             </div>
@@ -340,14 +500,16 @@ export default function Home() {
             <span className="font-serif text-xl font-bold">ADVAITAM</span>
           </div>
           <p className="mb-4">Luxury Forest Villas in Jim Corbett.</p>
-          <p className="text-sm opacity-50">© {new Date().getFullYear()} Advaitam Villas. All rights reserved.</p>
+          <p className="text-sm opacity-50">
+            © {new Date().getFullYear()} Advaitam Villas. All rights reserved.
+          </p>
         </div>
       </footer>
 
       {/* Sticky WhatsApp Button */}
-      <a 
-        href="https://wa.me/919217567788" 
-        target="_blank" 
+      <a
+        href="https://wa.me/919217567788"
+        target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform group animate-bounce hover:animate-none"
         aria-label="Chat on WhatsApp"
@@ -359,17 +521,31 @@ export default function Home() {
       {showExitIntent && (
         <div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-card w-full max-w-md rounded-2xl shadow-2xl border border-border p-8 relative animate-in zoom-in-95">
-            <button 
+            <button
               onClick={() => setShowExitIntent(false)}
               className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
             >
               <X className="w-6 h-6" />
             </button>
             <h3 className="text-3xl font-serif font-bold mb-2">Wait!</h3>
-            <p className="text-xl mb-6">Want <span className="text-primary font-bold">₹15L Discount</span> Details?</p>
+            <p className="text-xl mb-6">
+              Want <span className="text-primary font-bold">₹15L Discount</span>{" "}
+              Details?
+            </p>
             <form onSubmit={handleExitIntentSubmit} className="space-y-4">
-              <Input required name="phone" type="tel" placeholder="Enter your phone number" className="h-14 text-lg bg-background" disabled={createLead.isPending} />
-              <Button type="submit" disabled={createLead.isPending} className="w-full h-14 text-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+              <Input
+                required
+                name="phone"
+                type="tel"
+                placeholder="Enter your phone number"
+                className="h-14 text-lg bg-background"
+                disabled={createLead.isPending}
+              />
+              <Button
+                type="submit"
+                disabled={createLead.isPending}
+                className="w-full h-14 text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
                 {createLead.isPending ? "Submitting..." : "Unlock Offer"}
               </Button>
             </form>
