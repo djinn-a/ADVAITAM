@@ -1,0 +1,11 @@
+name = "advaitam-villas"
+compatibility_date = "2025-01-01"
+
+[build]
+command = "pnpm build"
+upload = { format = "service-worker" }
+
+[[d1_databases]]
+binding = "D1"
+database_name = "advaitam_villas"
+database_id = "2701a835-7a05-4bff-9c8d-8fc8743caae6"

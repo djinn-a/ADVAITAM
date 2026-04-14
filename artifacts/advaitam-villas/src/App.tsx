@@ -9,8 +9,8 @@ import Admin from "@/pages/Admin";
 
 const queryClient = new QueryClient();
 
-// Configure API base URL
-setBaseUrl("http://localhost:3001");
+// Use same-origin API paths for Cloudflare Pages Functions.
+setBaseUrl(null);
 
 function Router() {
   return (
