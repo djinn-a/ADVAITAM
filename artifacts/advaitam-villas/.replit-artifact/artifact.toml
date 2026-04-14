@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Advaitam Villas"
+version = "1.0.0"
+id = "artifacts/advaitam-villas"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25364
+
+[services.development]
+run = "pnpm --filter @workspace/advaitam-villas run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/advaitam-villas", "run", "build" ]
+publicDir = "artifacts/advaitam-villas/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25364"
+BASE_PATH = "/"

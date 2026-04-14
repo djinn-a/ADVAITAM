@@ -1,0 +1,26 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "-5t4WXT_Oq_cwB1mXYo6B"
+uri = "file://artifacts/advaitam-villas/public/hero-bg.png"
+type = "image"
+title = "Hero background forest villa"
+
+[[generated]]
+id = "jxZO-HlJ7tS6-FvcZqz06"
+uri = "file://artifacts/advaitam-villas/public/villa-exterior.png"
+type = "image"
+title = "Villa exterior with pool"
+
+[[generated]]
+id = "yus38bpoPWiOSP3WK2QF6"
+uri = "file://artifacts/advaitam-villas/public/villa-interior.png"
+type = "image"
+title = "Villa interior living space"
+
+[[generated]]
+id = "JRXdF9K7YPCEXbP3ZWnR0"
+uri = "file://artifacts/advaitam-villas/public/rooftop-terrace.png"
+type = "image"
+title = "Rooftop garden terrace"
