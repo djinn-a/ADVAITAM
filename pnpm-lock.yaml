@@ -364,6 +364,9 @@ importers:
       wrangler:
         specifier: ^3.47.0
         version: 3.114.17
+      zod:
+        specifier: 'catalog:'
+        version: 3.25.76
 
   artifacts/api-server:
     dependencies:

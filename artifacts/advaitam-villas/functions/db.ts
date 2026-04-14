@@ -28,7 +28,10 @@ export async function ensureLeadSchema(env: any) {
   return await env.D1.prepare(CREATE_LEADS_TABLE).run();
 }
 
-export async function listLeads(env: any, filters: { status?: string; source?: string }) {
+export async function listLeads(
+  env: any,
+  filters: { status?: string; source?: string },
+) {
   let sql = "SELECT * FROM leads";
   const binds: Array<string> = [];
   const conditions: string[] = [];
@@ -48,33 +51,57 @@ export async function listLeads(env: any, filters: { status?: string; source?: s
 
   sql += " ORDER BY created_at DESC";
 
-  const result = await env.D1.prepare(sql).bind(...binds).all();
+  const result = await env.D1.prepare(sql)
+    .bind(...binds)
+    .all();
   const rows = result.results ?? [];
   return rows.map(rowToLead);
 }
 
 export async function getLeadById(env: any, id: number) {
-  const result = await env.D1.prepare("SELECT * FROM leads WHERE id = ?").bind(id).all();
+  const result = await env.D1.prepare("SELECT * FROM leads WHERE id = ?")
+    .bind(id)
+    .all();
   const lead = (result.results ?? [])[0];
   return lead ? rowToLead(lead) : null;
 }
 
-export async function createLead(env: any, data: { name: string; phone: string; email?: string | null; source: string }) {
+export async function createLead(
+  env: any,
+  data: { name: string; phone: string; email?: string | null; source: string },
+) {
   const result = await env.D1.prepare(
-    "INSERT INTO leads (name, phone, email, source) VALUES (?, ?, ?, ?)"
+    "INSERT INTO leads (name, phone, email, source) VALUES (?, ?, ?, ?)",
   )
     .bind(data.name, data.phone, data.email ?? null, data.source)
     .run();
 
+  // Try lastInsertRowid first (production D1), fallback to querying latest (local D1)
   const id = Number(result?.lastInsertRowid ?? 0);
-  if (!id) {
+  if (id) {
+    return await getLeadById(env, id);
+  }
+
+  // Fallback: query for the most recently created lead
+  const latestResult = await env.D1.prepare(
+    "SELECT * FROM leads WHERE name = ? AND phone = ? AND source = ? ORDER BY created_at DESC LIMIT 1",
+  )
+    .bind(data.name, data.phone, data.source)
+    .all();
+
+  const lead = (latestResult.results ?? [])[0];
+  if (!lead) {
     throw new Error("Failed to insert lead");
   }
 
-  return await getLeadById(env, id);
+  return rowToLead(lead);
 }
 
-export async function updateLead(env: any, id: number, data: { status?: string; notes?: string | null }) {
+export async function updateLead(
+  env: any,
+  id: number,
+  data: { status?: string; notes?: string | null },
+) {
   const segments: string[] = [];
   const binds: Array<string | number | null> = [];
 
@@ -93,7 +120,9 @@ export async function updateLead(env: any, id: number, data: { status?: string; 
 
   binds.push(id);
   const sql = `UPDATE leads SET ${segments.join(", ")}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
-  const result = await env.D1.prepare(sql).bind(...binds).run();
+  const result = await env.D1.prepare(sql)
+    .bind(...binds)
+    .run();
 
   if (!result || result.status !== 200) {
     return null;
@@ -103,27 +132,31 @@ export async function updateLead(env: any, id: number, data: { status?: string; 
 }
 
 export async function deleteLead(env: any, id: number) {
-  const result = await env.D1.prepare("DELETE FROM leads WHERE id = ?").bind(id).run();
+  const result = await env.D1.prepare("DELETE FROM leads WHERE id = ?")
+    .bind(id)
+    .run();
   return Boolean(result && result.status === 200);
 }
 
 export async function getLeadStats(env: any) {
-  const totalResult = await env.D1.prepare("SELECT COUNT(*) AS count FROM leads").all();
-  const total = Number((totalResult.results?.[0]?.count ?? 0) ?? 0);
+  const totalResult = await env.D1.prepare(
+    "SELECT COUNT(*) AS count FROM leads",
+  ).all();
+  const total = Number(totalResult.results?.[0]?.count ?? 0 ?? 0);
 
   const now = new Date();
   now.setUTCHours(0, 0, 0, 0);
   const fromToday = now.toISOString();
 
   const newTodayResult = await env.D1.prepare(
-    "SELECT COUNT(*) AS count FROM leads WHERE created_at >= ?"
+    "SELECT COUNT(*) AS count FROM leads WHERE created_at >= ?",
   )
     .bind(fromToday)
     .all();
-  const newToday = Number((newTodayResult.results?.[0]?.count ?? 0) ?? 0);
+  const newToday = Number(newTodayResult.results?.[0]?.count ?? 0 ?? 0);
 
   const statusResult = await env.D1.prepare(
-    "SELECT status, COUNT(*) AS count FROM leads GROUP BY status"
+    "SELECT status, COUNT(*) AS count FROM leads GROUP BY status",
   ).all();
   const byStatus = {
     new: 0,
@@ -138,7 +171,7 @@ export async function getLeadStats(env: any) {
   }
 
   const sourceResult = await env.D1.prepare(
-    "SELECT source, COUNT(*) AS count FROM leads GROUP BY source"
+    "SELECT source, COUNT(*) AS count FROM leads GROUP BY source",
   ).all();
   const bySource = {
     brochure: 0,

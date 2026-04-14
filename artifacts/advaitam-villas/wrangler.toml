@@ -1,9 +1,6 @@
 name = "advaitam-villas"
 compatibility_date = "2025-01-01"
-
-[build]
-command = "pnpm build"
-upload = { format = "service-worker" }
+pages_build_output_dir = "dist"
 
 [[d1_databases]]
 binding = "D1"

@@ -7,18 +7,20 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 ## Stack
 
 - **Monorepo tool**: pnpm workspaces
-- **Node.js version**: 24
+- **Node.js version**: 24 (see `.nvmrc` and `package.json` engines)
 - **Package manager**: pnpm
 - **TypeScript version**: 5.9
-- **API framework**: Express 5
-- **Database**: PostgreSQL + Drizzle ORM
-- **Validation**: Zod (`zod/v4`), `drizzle-zod`
+- **Frontend**: React + Vite (static build)
+- **API**: Cloudflare Pages Functions
+- **Database**: Cloudflare D1 (SQLite)
+- **Validation**: Zod
 - **API codegen**: Orval (from OpenAPI spec)
-- **Build**: esbuild (CJS bundle)
+- **Build**: Vite → `dist/` for Pages deployment
 
 ## Artifacts
 
 ### Advaitam Villas (`artifacts/advaitam-villas`)
+
 - **Preview path**: `/`
 - **Type**: React + Vite landing page with admin dashboard
 - **Pages**:
@@ -30,7 +32,7 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - Lead capture form on landing page posts to `/api/leads`
 - Exit intent popup submits leads with source `exit-popup`
 - Admin dashboard at `/admin` shows all leads with stats, filters, status update, notes, and delete
-- 10 demo leads seeded on creation
+- Tables auto-created on first request (idempotent, no demo data in production)
 
 ## Database Schema
 
@@ -49,10 +51,10 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 
 ## Key Commands
 
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
+- `pnpm run typecheck` — typecheck active packages (excludes legacy)
+- `pnpm run build` — typecheck + build all active packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- `pnpm --filter @workspace/api-server run dev` — run API server locally
+- `pnpm --filter @workspace/advaitam-villas run dev` — run Vite dev server
+- `pnpm --filter @workspace/advaitam-villas run pages:dev` — run Pages Functions + D1 locally
 
-See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+See `artifacts/advaitam-villas/DEPLOY.md` for Cloudflare deployment details.
