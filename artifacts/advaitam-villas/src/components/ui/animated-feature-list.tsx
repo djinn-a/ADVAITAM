@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 interface AnimatedFeatureListProps {
   items: string[];
@@ -13,6 +14,21 @@ export const AnimatedFeatureList = ({
   staggerDelay = 0.08,
 }: AnimatedFeatureListProps) => {
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
+  const prefersReducedMotion = useReducedMotion();
+
+  // If user prefers reduced motion, render static list
+  if (prefersReducedMotion) {
+    return (
+      <div ref={ref} className={className}>
+        {items.map((item, index) => (
+          <div key={index} className="flex items-start gap-3">
+            <CheckCircle2 className="w-6 h-6 text-primary shrink-0" />
+            <span className="font-medium">{item}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },

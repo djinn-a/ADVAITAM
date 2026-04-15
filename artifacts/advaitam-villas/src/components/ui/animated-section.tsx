@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 interface AnimatedSectionProps {
   children: React.ReactNode;
@@ -17,6 +18,16 @@ export const AnimatedSection = ({
   duration = 0.5,
 }: AnimatedSectionProps) => {
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
+  const prefersReducedMotion = useReducedMotion();
+
+  // If user prefers reduced motion, render without animation
+  if (prefersReducedMotion) {
+    return (
+      <div ref={ref} className={className}>
+        {children}
+      </div>
+    );
+  }
 
   const getInitialVariants = () => {
     switch (direction) {

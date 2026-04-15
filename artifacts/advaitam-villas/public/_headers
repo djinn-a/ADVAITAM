@@ -1,0 +1,25 @@
+# Cache headers for Cloudflare Pages
+
+# Static assets - immutable (hashed filenames)
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images and fonts
+*.png
+  Cache-Control: public, max-age=86400
+
+*.jpg
+  Cache-Control: public, max-age=86400
+
+*.svg
+  Cache-Control: public, max-age=86400
+
+# HTML and JSON - no cache for SSR/prerendered content
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+
+/robots.txt
+  Cache-Control: public, max-age=86400

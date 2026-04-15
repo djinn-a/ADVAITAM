@@ -6,6 +6,7 @@ import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+// Note: Prerendering for SEO is handled separately via post-build script
 
 // Load .env file explicitly
 const __filename = fileURLToPath(import.meta.url);
