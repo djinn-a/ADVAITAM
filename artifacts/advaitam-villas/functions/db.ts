@@ -10,6 +10,12 @@ const CREATE_LEADS_TABLE = `CREATE TABLE IF NOT EXISTS leads (
   updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );`;
 
+const CREATE_SETTINGS_TABLE = `CREATE TABLE IF NOT EXISTS site_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);`;
+
 function rowToLead(row: any) {
   return {
     id: row.id,
@@ -26,6 +32,10 @@ function rowToLead(row: any) {
 
 export async function ensureLeadSchema(env: any) {
   return await env.D1.prepare(CREATE_LEADS_TABLE).run();
+}
+
+export async function ensureSettingsSchema(env: any) {
+  return await env.D1.prepare(CREATE_SETTINGS_TABLE).run();
 }
 
 export async function listLeads(
@@ -191,4 +201,45 @@ export async function getLeadStats(env: any) {
     byStatus,
     bySource,
   };
+}
+
+// Site Settings CRUD
+const DEFAULT_SETTINGS: Record<string, string> = {
+  whatsapp_phone: "919217567788",
+  contact_email: "info@advaitamvillas.com",
+  current_availability: "9",
+  discount_pricing: "15",
+  discount_exit_intent: "15L",
+};
+
+export async function getAllSettings(
+  env: any,
+): Promise<Record<string, string>> {
+  const result = await env.D1.prepare("SELECT * FROM site_settings").all();
+  const settings: Record<string, string> = { ...DEFAULT_SETTINGS };
+  for (const row of result.results ?? []) {
+    settings[row.key] = row.value;
+  }
+  return settings;
+}
+
+export async function updateSetting(
+  env: any,
+  key: string,
+  value: string,
+): Promise<void> {
+  await env.D1.prepare(
+    "INSERT INTO site_settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP) ON CONFLICT(key) DO UPDATE SET value = ?, updated_at = CURRENT_TIMESTAMP",
+  )
+    .bind(key, value, value)
+    .run();
+}
+
+export async function updateMultipleSettings(
+  env: any,
+  settings: Record<string, string>,
+): Promise<void> {
+  for (const [key, value] of Object.entries(settings)) {
+    await updateSetting(env, key, value);
+  }
 }

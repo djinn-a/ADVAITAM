@@ -13,4 +13,6 @@ export * from './leadStats';
 export * from './leadStatsBySource';
 export * from './leadStatsByStatus';
 export * from './listLeadsParams';
+export * from './siteSettings';
 export * from './updateLeadBody';
+export * from './updateSiteSettingsBody';

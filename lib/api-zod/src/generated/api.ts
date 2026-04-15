@@ -124,3 +124,35 @@ export const DeleteLeadParams = zod.object({
 })
 
 
+/**
+ * @summary Get all site settings
+ */
+export const GetSiteSettingsResponse = zod.object({
+  "whatsapp_phone": zod.string().describe('WhatsApp number with country code (e.g., 919217567788)'),
+  "contact_email": zod.string().describe('Contact email address'),
+  "current_availability": zod.string().describe('Current villa availability count (0-17)'),
+  "discount_pricing": zod.string().describe('Discount amount for pricing section (in Lakhs)'),
+  "discount_exit_intent": zod.string().describe('Discount text for exit intent popup')
+})
+
+
+/**
+ * @summary Update site settings
+ */
+export const UpdateSiteSettingsBody = zod.object({
+  "whatsapp_phone": zod.string().optional().describe('WhatsApp number with country code'),
+  "contact_email": zod.string().optional().describe('Contact email address'),
+  "current_availability": zod.string().optional().describe('Current villa availability count'),
+  "discount_pricing": zod.string().optional().describe('Discount amount for pricing section'),
+  "discount_exit_intent": zod.string().optional().describe('Discount text for exit intent popup')
+})
+
+export const UpdateSiteSettingsResponse = zod.object({
+  "whatsapp_phone": zod.string().describe('WhatsApp number with country code (e.g., 919217567788)'),
+  "contact_email": zod.string().describe('Contact email address'),
+  "current_availability": zod.string().describe('Current villa availability count (0-17)'),
+  "discount_pricing": zod.string().describe('Discount amount for pricing section (in Lakhs)'),
+  "discount_exit_intent": zod.string().describe('Discount text for exit intent popup')
+})
+
+

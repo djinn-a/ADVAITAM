@@ -69,8 +69,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  useGetSiteSettings,
+  useUpdateSiteSettings,
+  getGetSiteSettingsQueryKey,
+} from "@workspace/api-client-react";
 
 export default function Admin() {
+  const [activeTab, setActiveTab] = useState("leads");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -82,6 +89,15 @@ export default function Admin() {
 
   const [editStatus, setEditStatus] = useState<string>("new");
   const [editNotes, setEditNotes] = useState<string>("");
+
+  // Site Settings State
+  const [settingsForm, setSettingsForm] = useState({
+    whatsapp_phone: "",
+    contact_email: "",
+    current_availability: "",
+    discount_pricing: "",
+    discount_exit_intent: "",
+  });
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -103,6 +119,44 @@ export default function Admin() {
 
   const updateLead = useUpdateLead();
   const deleteLead = useDeleteLead();
+
+  // Site Settings Hooks
+  const { data: settings, isLoading: isLoadingSettings } = useGetSiteSettings();
+  const updateSettings = useUpdateSiteSettings();
+
+  // Load settings into form when data arrives
+  useMemo(() => {
+    if (settings) {
+      setSettingsForm({
+        whatsapp_phone: settings.whatsapp_phone || "",
+        contact_email: settings.contact_email || "",
+        current_availability: settings.current_availability || "",
+        discount_pricing: settings.discount_pricing || "",
+        discount_exit_intent: settings.discount_exit_intent || "",
+      });
+    }
+  }, [settings]);
+
+  const handleSettingsSave = () => {
+    updateSettings.mutate(
+      { data: settingsForm },
+      {
+        onSuccess: () => {
+          toast({ title: "Settings saved successfully" });
+          queryClient.invalidateQueries({
+            queryKey: getGetSiteSettingsQueryKey(),
+          });
+        },
+        onError: (error) => {
+          toast({
+            title: "Failed to save settings",
+            description: error.message,
+            variant: "destructive",
+          });
+        },
+      },
+    );
+  };
 
   const filteredLeads = useMemo(() => {
     if (!Array.isArray(leads)) return [];
@@ -274,266 +328,414 @@ export default function Admin() {
       </header>
 
       <main className="flex-1 container mx-auto px-6 py-8 space-y-8">
-        {/* Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="bg-card border-border shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Leads
-              </CardTitle>
-              <Users className="w-4 h-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              {isLoadingStats ? (
-                <Skeleton className="h-8 w-20" />
-              ) : (
-                <div className="text-3xl font-bold">{stats?.total || 0}</div>
-              )}
-            </CardContent>
-          </Card>
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-8"
+        >
+          <TabsList className="bg-card border border-border">
+            <TabsTrigger value="leads">Lead Pipeline</TabsTrigger>
+            <TabsTrigger value="settings">Site Settings</TabsTrigger>
+          </TabsList>
 
-          <Card className="bg-card border-border shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                New Today
-              </CardTitle>
-              <TrendingUp className="w-4 h-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              {isLoadingStats ? (
-                <Skeleton className="h-8 w-20" />
-              ) : (
-                <div className="text-3xl font-bold text-primary">
-                  {stats?.newToday || 0}
+          <TabsContent value="leads" className="space-y-8">
+            {/* Stats Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="bg-card border-border shadow-sm">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Total Leads
+                  </CardTitle>
+                  <Users className="w-4 h-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  {isLoadingStats ? (
+                    <Skeleton className="h-8 w-20" />
+                  ) : (
+                    <div className="text-3xl font-bold">
+                      {stats?.total || 0}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card className="bg-card border-border shadow-sm">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    New Today
+                  </CardTitle>
+                  <TrendingUp className="w-4 h-4 text-primary" />
+                </CardHeader>
+                <CardContent>
+                  {isLoadingStats ? (
+                    <Skeleton className="h-8 w-20" />
+                  ) : (
+                    <div className="text-3xl font-bold text-primary">
+                      {stats?.newToday || 0}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card className="bg-card border-border shadow-sm">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Qualified
+                  </CardTitle>
+                  <UserCheck className="w-4 h-4 text-green-500" />
+                </CardHeader>
+                <CardContent>
+                  {isLoadingStats ? (
+                    <Skeleton className="h-8 w-20" />
+                  ) : (
+                    <div className="text-3xl font-bold text-green-500">
+                      {stats?.byStatus?.qualified || 0}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card className="bg-card border-border shadow-sm">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Lost
+                  </CardTitle>
+                  <UserX className="w-4 h-4 text-red-500" />
+                </CardHeader>
+                <CardContent>
+                  {isLoadingStats ? (
+                    <Skeleton className="h-8 w-20" />
+                  ) : (
+                    <div className="text-3xl font-bold text-red-500">
+                      {stats?.byStatus?.lost || 0}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Leads Table Section */}
+            <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden flex flex-col">
+              <div className="p-6 border-b border-border flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                <h2 className="text-lg font-bold font-serif">Lead Pipeline</h2>
+
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      placeholder="Search leads..."
+                      className="pl-9 w-full sm:w-64 bg-background"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-full sm:w-36 bg-background">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Statuses</SelectItem>
+                      <SelectItem value="new">New</SelectItem>
+                      <SelectItem value="contacted">Contacted</SelectItem>
+                      <SelectItem value="qualified">Qualified</SelectItem>
+                      <SelectItem value="lost">Lost</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Select value={sourceFilter} onValueChange={setSourceFilter}>
+                    <SelectTrigger className="w-full sm:w-36 bg-background">
+                      <SelectValue placeholder="Source" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Sources</SelectItem>
+                      <SelectItem value="brochure">Brochure</SelectItem>
+                      <SelectItem value="site-visit">Site Visit</SelectItem>
+                      <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                      <SelectItem value="exit-popup">Exit Popup</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-border shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Qualified
-              </CardTitle>
-              <UserCheck className="w-4 h-4 text-green-500" />
-            </CardHeader>
-            <CardContent>
-              {isLoadingStats ? (
-                <Skeleton className="h-8 w-20" />
-              ) : (
-                <div className="text-3xl font-bold text-green-500">
-                  {stats?.byStatus?.qualified || 0}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-border shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Lost
-              </CardTitle>
-              <UserX className="w-4 h-4 text-red-500" />
-            </CardHeader>
-            <CardContent>
-              {isLoadingStats ? (
-                <Skeleton className="h-8 w-20" />
-              ) : (
-                <div className="text-3xl font-bold text-red-500">
-                  {stats?.byStatus?.lost || 0}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Leads Table Section */}
-        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden flex flex-col">
-          <div className="p-6 border-b border-border flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <h2 className="text-lg font-bold font-serif">Lead Pipeline</h2>
-
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-              <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search leads..."
-                  className="pl-9 w-full sm:w-64 bg-background"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
               </div>
 
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full sm:w-36 bg-background">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="new">New</SelectItem>
-                  <SelectItem value="contacted">Contacted</SelectItem>
-                  <SelectItem value="qualified">Qualified</SelectItem>
-                  <SelectItem value="lost">Lost</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={sourceFilter} onValueChange={setSourceFilter}>
-                <SelectTrigger className="w-full sm:w-36 bg-background">
-                  <SelectValue placeholder="Source" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Sources</SelectItem>
-                  <SelectItem value="brochure">Brochure</SelectItem>
-                  <SelectItem value="site-visit">Site Visit</SelectItem>
-                  <SelectItem value="whatsapp">WhatsApp</SelectItem>
-                  <SelectItem value="exit-popup">Exit Popup</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader className="bg-secondary/30">
+                    <TableRow className="hover:bg-transparent border-border">
+                      <TableHead className="w-[200px] text-muted-foreground font-medium">
+                        Contact
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Details
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Source
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Status
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Date
+                      </TableHead>
+                      <TableHead className="text-right text-muted-foreground font-medium">
+                        Actions
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {isLoadingLeads ? (
+                      Array.from({ length: 5 }).map((_, i) => (
+                        <TableRow key={i} className="border-border">
+                          <TableCell>
+                            <Skeleton className="h-10 w-full" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-10 w-full" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-6 w-20" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-6 w-20" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-4 w-24" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-8 w-8 ml-auto" />
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : filteredLeads.length === 0 ? (
+                      <TableRow className="border-border hover:bg-transparent">
+                        <TableCell
+                          colSpan={6}
+                          className="h-48 text-center text-muted-foreground"
+                        >
+                          No leads found.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      filteredLeads.map((lead) => (
+                        <TableRow
+                          key={lead.id}
+                          className="border-border hover:bg-muted/30 cursor-pointer transition-colors"
+                          onClick={() => handleEditClick(lead)}
+                        >
+                          <TableCell>
+                            <div className="font-medium text-foreground">
+                              {lead.name}
+                            </div>
+                            <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                              <Phone className="w-3 h-3" /> {lead.phone}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {lead.email ? (
+                              <div className="text-sm flex items-center gap-1.5">
+                                <Mail className="w-3.5 h-3.5 text-muted-foreground" />{" "}
+                                {lead.email}
+                              </div>
+                            ) : (
+                              <span className="text-xs text-muted-foreground italic">
+                                No email
+                              </span>
+                            )}
+                            {lead.notes && (
+                              <div className="text-xs text-muted-foreground mt-1 truncate max-w-[200px] flex items-center gap-1.5">
+                                <MessageSquare className="w-3 h-3 shrink-0" />{" "}
+                                {lead.notes}
+                              </div>
+                            )}
+                          </TableCell>
+                          <TableCell>{getSourceBadge(lead.source)}</TableCell>
+                          <TableCell>{getStatusBadge(lead.status)}</TableCell>
+                          <TableCell>
+                            <div className="text-sm flex items-center gap-1.5 text-muted-foreground">
+                              <Calendar className="w-3.5 h-3.5" />
+                              {format(new Date(lead.createdAt), "MMM d, yyyy")}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger
+                                asChild
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Button
+                                  variant="ghost"
+                                  className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                                >
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent
+                                align="end"
+                                className="w-[160px]"
+                              >
+                                <DropdownMenuItem
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEditClick(lead);
+                                  }}
+                                >
+                                  <Pencil className="mr-2 h-4 w-4" /> Edit Lead
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setLeadToDelete(lead.id);
+                                    setIsDeleteAlertOpen(true);
+                                  }}
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                  Lead
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
-          </div>
+          </TabsContent>
 
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-secondary/30">
-                <TableRow className="hover:bg-transparent border-border">
-                  <TableHead className="w-[200px] text-muted-foreground font-medium">
-                    Contact
-                  </TableHead>
-                  <TableHead className="text-muted-foreground font-medium">
-                    Details
-                  </TableHead>
-                  <TableHead className="text-muted-foreground font-medium">
-                    Source
-                  </TableHead>
-                  <TableHead className="text-muted-foreground font-medium">
-                    Status
-                  </TableHead>
-                  <TableHead className="text-muted-foreground font-medium">
-                    Date
-                  </TableHead>
-                  <TableHead className="text-right text-muted-foreground font-medium">
-                    Actions
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoadingLeads ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <TableRow key={i} className="border-border">
-                      <TableCell>
-                        <Skeleton className="h-10 w-full" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-10 w-full" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-6 w-20" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-6 w-20" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-24" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-8 w-8 ml-auto" />
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : filteredLeads.length === 0 ? (
-                  <TableRow className="border-border hover:bg-transparent">
-                    <TableCell
-                      colSpan={6}
-                      className="h-48 text-center text-muted-foreground"
-                    >
-                      No leads found.
-                    </TableCell>
-                  </TableRow>
+          <TabsContent value="settings">
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="text-lg font-serif">
+                  Site Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {isLoadingSettings ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                  </div>
                 ) : (
-                  filteredLeads.map((lead) => (
-                    <TableRow
-                      key={lead.id}
-                      className="border-border hover:bg-muted/30 cursor-pointer transition-colors"
-                      onClick={() => handleEditClick(lead)}
-                    >
-                      <TableCell>
-                        <div className="font-medium text-foreground">
-                          {lead.name}
-                        </div>
-                        <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                          <Phone className="w-3 h-3" /> {lead.phone}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {lead.email ? (
-                          <div className="text-sm flex items-center gap-1.5">
-                            <Mail className="w-3.5 h-3.5 text-muted-foreground" />{" "}
-                            {lead.email}
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground italic">
-                            No email
-                          </span>
-                        )}
-                        {lead.notes && (
-                          <div className="text-xs text-muted-foreground mt-1 truncate max-w-[200px] flex items-center gap-1.5">
-                            <MessageSquare className="w-3 h-3 shrink-0" />{" "}
-                            {lead.notes}
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell>{getSourceBadge(lead.source)}</TableCell>
-                      <TableCell>{getStatusBadge(lead.status)}</TableCell>
-                      <TableCell>
-                        <div className="text-sm flex items-center gap-1.5 text-muted-foreground">
-                          <Calendar className="w-3.5 h-3.5" />
-                          {format(new Date(lead.createdAt), "MMM d, yyyy")}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger
-                            asChild
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Button
-                              variant="ghost"
-                              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-                            >
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent
-                            align="end"
-                            className="w-[160px]"
-                          >
-                            <DropdownMenuItem
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditClick(lead);
-                              }}
-                            >
-                              <Pencil className="mr-2 h-4 w-4" /> Edit Lead
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-red-500 focus:text-red-500 focus:bg-red-500/10"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setLeadToDelete(lead.id);
-                                setIsDeleteAlertOpen(true);
-                              }}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" /> Delete Lead
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                          WhatsApp Phone Number
+                        </label>
+                        <Input
+                          value={settingsForm.whatsapp_phone}
+                          onChange={(e) =>
+                            setSettingsForm({
+                              ...settingsForm,
+                              whatsapp_phone: e.target.value,
+                            })
+                          }
+                          placeholder="919217567788"
+                          className="bg-background"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Format: country code + number (no + or spaces)
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                          Contact Email
+                        </label>
+                        <Input
+                          value={settingsForm.contact_email}
+                          onChange={(e) =>
+                            setSettingsForm({
+                              ...settingsForm,
+                              contact_email: e.target.value,
+                            })
+                          }
+                          placeholder="info@advaitamvillas.com"
+                          className="bg-background"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                          Current Availability
+                        </label>
+                        <Input
+                          value={settingsForm.current_availability}
+                          onChange={(e) =>
+                            setSettingsForm({
+                              ...settingsForm,
+                              current_availability: e.target.value,
+                            })
+                          }
+                          placeholder="9"
+                          className="bg-background"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Number of villas currently available (0-17)
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                          Discount (Pricing Section)
+                        </label>
+                        <Input
+                          value={settingsForm.discount_pricing}
+                          onChange={(e) =>
+                            setSettingsForm({
+                              ...settingsForm,
+                              discount_pricing: e.target.value,
+                            })
+                          }
+                          placeholder="15"
+                          className="bg-background"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Discount amount in Lakhs (e.g., 15)
+                        </p>
+                      </div>
+
+                      <div className="space-y-2 md:col-span-2">
+                        <label className="text-sm font-medium">
+                          Discount (Exit Intent Popup)
+                        </label>
+                        <Input
+                          value={settingsForm.discount_exit_intent}
+                          onChange={(e) =>
+                            setSettingsForm({
+                              ...settingsForm,
+                              discount_exit_intent: e.target.value,
+                            })
+                          }
+                          placeholder="15L"
+                          className="bg-background"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Text shown in exit intent popup (e.g., 15L or ₹15L
+                          Discount)
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end pt-4">
+                      <Button
+                        onClick={handleSettingsSave}
+                        disabled={updateSettings.isPending}
+                      >
+                        {updateSettings.isPending
+                          ? "Saving..."
+                          : "Save Settings"}
+                      </Button>
+                    </div>
+                  </>
                 )}
-              </TableBody>
-            </Table>
-          </div>
-        </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Edit Modal */}

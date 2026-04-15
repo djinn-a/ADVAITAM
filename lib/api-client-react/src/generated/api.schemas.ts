@@ -61,6 +61,32 @@ export interface LeadStats {
   bySource: LeadStatsBySource;
 }
 
+export interface SiteSettings {
+  /** WhatsApp number with country code (e.g., 919217567788) */
+  whatsapp_phone: string;
+  /** Contact email address */
+  contact_email: string;
+  /** Current villa availability count (0-17) */
+  current_availability: string;
+  /** Discount amount for pricing section (in Lakhs) */
+  discount_pricing: string;
+  /** Discount text for exit intent popup */
+  discount_exit_intent: string;
+}
+
+export interface UpdateSiteSettingsBody {
+  /** WhatsApp number with country code */
+  whatsapp_phone?: string;
+  /** Contact email address */
+  contact_email?: string;
+  /** Current villa availability count */
+  current_availability?: string;
+  /** Discount amount for pricing section */
+  discount_pricing?: string;
+  /** Discount text for exit intent popup */
+  discount_exit_intent?: string;
+}
+
 export type ListLeadsParams = {
 status?: string;
 source?: string;

@@ -18,7 +18,7 @@ import {
   Phone,
   ArrowRight,
 } from "lucide-react";
-import { useCreateLead } from "@workspace/api-client-react";
+import { useCreateLead, useGetSiteSettings } from "@workspace/api-client-react";
 
 export default function Home() {
   const { toast } = useToast();
@@ -28,11 +28,27 @@ export default function Home() {
   const [hasCreatedLead, setHasCreatedLead] = useState(() => {
     return localStorage.getItem("advaitam_lead_created") === "true";
   });
+  const { data: settings } = useGetSiteSettings();
+
+  const initialAvailability = settings?.current_availability
+    ? parseInt(settings.current_availability, 10)
+    : 9;
+
   const [villaCount, setVillaCount] = useState(17);
   const countRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
   const createLead = useCreateLead();
+
+  // Derived values from settings
+  const whatsappNumber = settings?.whatsapp_phone || "919217567788";
+  const contactEmail = settings?.contact_email || "info@advaitamvillas.com";
+  const discountPricing = settings?.discount_pricing || "15";
+  const discountExitIntent = settings?.discount_exit_intent || "15L";
+  const offerPrice = (
+    1.5 -
+    parseInt(discountPricing || "15", 10) / 100
+  ).toFixed(2);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,7 +86,7 @@ export default function Home() {
 
   useEffect(() => {
     if (prefersReducedMotion) {
-      setVillaCount(9);
+      setVillaCount(initialAvailability);
       return;
     }
 
@@ -80,14 +96,14 @@ export default function Home() {
         const interval = setInterval(() => {
           count--;
           setVillaCount(count);
-          if (count === 9) clearInterval(interval);
+          if (count === initialAvailability) clearInterval(interval);
         }, 150);
         observer.disconnect();
       }
     });
     if (countRef.current) observer.observe(countRef.current);
     return () => observer.disconnect();
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, initialAvailability]);
 
   const handleBrochureSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -475,12 +491,12 @@ export default function Home() {
                   </div>
                   <div className="flex justify-between items-center text-primary font-medium">
                     <span>Special Discount</span>
-                    <span>- ₹15 Lakhs</span>
+                    <span>- ₹{discountPricing} Lakhs</span>
                   </div>
                   <div className="h-px bg-border my-2"></div>
                   <div className="flex justify-between items-center text-2xl font-bold">
                     <span>Offer Price</span>
-                    <span>₹1.35 Cr</span>
+                    <span>₹{offerPrice} Cr</span>
                   </div>
                   <p className="text-xs text-center text-muted-foreground mt-4">
                     *Applicable on Limited Villas Only
@@ -489,11 +505,11 @@ export default function Home() {
 
                 <div className="space-y-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-3">
-                    <Phone className="w-4 h-4" /> +91 92175 67788
+                    <Phone className="w-4 h-4" /> +{whatsappNumber.slice(0, 2)}{" "}
+                    {whatsappNumber.slice(2, 7)} {whatsappNumber.slice(7)}
                   </div>
                   <div className="flex items-center gap-3">
-                    <MessageCircle className="w-4 h-4" />{" "}
-                    info@advaitamvillas.com
+                    <MessageCircle className="w-4 h-4" /> {contactEmail}
                   </div>
                   <div className="flex items-center gap-3">
                     <MapPin className="w-4 h-4" /> Site: Jim Corbett,
@@ -579,7 +595,7 @@ export default function Home() {
                     variant="outline"
                     className="w-full h-12 border-green-600 text-green-500 hover:bg-green-600/10 hover:text-green-400"
                     onClick={() =>
-                      window.open("https://wa.me/919217567788", "_blank")
+                      window.open(`https://wa.me/${whatsappNumber}`, "_blank")
                     }
                   >
                     <MessageCircle className="mr-2 w-5 h-5" /> Talk to Advisor
@@ -608,7 +624,7 @@ export default function Home() {
 
       {/* Sticky WhatsApp Button */}
       <a
-        href="https://wa.me/919217567788"
+        href={`https://wa.me/${whatsappNumber}`}
         target="_blank"
         rel="noopener noreferrer"
         className={`fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform group ${prefersReducedMotion ? "" : "animate-bounce hover:animate-none"}`}
@@ -640,7 +656,10 @@ export default function Home() {
               Wait!
             </h3>
             <p className="text-xl mb-6">
-              Want <span className="text-primary font-bold">₹15L Discount</span>{" "}
+              Want{" "}
+              <span className="text-primary font-bold">
+                ₹{discountExitIntent} Discount
+              </span>{" "}
               Details?
             </p>
             <form onSubmit={handleExitIntentSubmit} className="space-y-4">

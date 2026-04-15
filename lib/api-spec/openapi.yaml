@@ -12,6 +12,8 @@ tags:
     description: Health operations
   - name: leads
     description: Lead management operations
+  - name: settings
+    description: Site configuration operations
 paths:
   /healthz:
     get:
@@ -146,6 +148,38 @@ paths:
         "404":
           description: Not found
 
+  /settings:
+    get:
+      operationId: getSiteSettings
+      tags: [settings]
+      summary: Get all site settings
+      responses:
+        "200":
+          description: Site settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+    post:
+      operationId: updateSiteSettings
+      tags: [settings]
+      summary: Update site settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSiteSettingsBody"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+        "400":
+          description: Validation error
+
 components:
   schemas:
     HealthStatus:
@@ -259,3 +293,47 @@ components:
         - newToday
         - byStatus
         - bySource
+
+    SiteSettings:
+      type: object
+      properties:
+        whatsapp_phone:
+          type: string
+          description: "WhatsApp number with country code (e.g., 919217567788)"
+        contact_email:
+          type: string
+          description: "Contact email address"
+        current_availability:
+          type: string
+          description: "Current villa availability count (0-17)"
+        discount_pricing:
+          type: string
+          description: "Discount amount for pricing section (in Lakhs)"
+        discount_exit_intent:
+          type: string
+          description: "Discount text for exit intent popup"
+      required:
+        - whatsapp_phone
+        - contact_email
+        - current_availability
+        - discount_pricing
+        - discount_exit_intent
+
+    UpdateSiteSettingsBody:
+      type: object
+      properties:
+        whatsapp_phone:
+          type: string
+          description: "WhatsApp number with country code"
+        contact_email:
+          type: string
+          description: "Contact email address"
+        current_availability:
+          type: string
+          description: "Current villa availability count"
+        discount_pricing:
+          type: string
+          description: "Discount amount for pricing section"
+        discount_exit_intent:
+          type: string
+          description: "Discount text for exit intent popup"
