@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { AnimatedSection } from "@/components/ui/animated-section";
+import { AnimatedFeatureList } from "@/components/ui/animated-feature-list";
 import {
   MapPin,
   Trees,
@@ -22,6 +24,9 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [showExitIntent, setShowExitIntent] = useState(false);
   const [hasShownExitIntent, setHasShownExitIntent] = useState(false);
+  const [hasCreatedLead, setHasCreatedLead] = useState(() => {
+    return localStorage.getItem("advaitam_lead_created") === "true";
+  });
   const [villaCount, setVillaCount] = useState(17);
   const countRef = useRef<HTMLDivElement>(null);
 
@@ -37,9 +42,24 @@ export default function Home() {
 
   useEffect(() => {
     const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && !hasShownExitIntent) {
+      const leadCreated =
+        localStorage.getItem("advaitam_lead_created") === "true";
+      console.log("[Exit Intent] Mouse leave triggered:", {
+        clientY: e.clientY,
+        hasShownExitIntent,
+        leadCreated,
+      });
+      if (e.clientY <= 0 && !hasShownExitIntent && !leadCreated) {
+        console.log("[Exit Intent] Showing popup");
         setShowExitIntent(true);
         setHasShownExitIntent(true);
+      } else {
+        console.log(
+          "[Exit Intent] Not showing popup - lead created:",
+          leadCreated,
+          "or already shown:",
+          hasShownExitIntent,
+        );
       }
     };
     document.addEventListener("mouseleave", handleMouseLeave);
@@ -75,6 +95,14 @@ export default function Home() {
       },
       {
         onSuccess: () => {
+          console.log("[Lead Created] Brochure form submitted successfully");
+          setHasCreatedLead(true);
+          localStorage.setItem("advaitam_lead_created", "true");
+          console.log(
+            "[Lead Created] localStorage set:",
+            localStorage.getItem("advaitam_lead_created"),
+          );
+          setShowExitIntent(false);
           toast({
             title: "Thank you!",
             description: "We'll reach out to you shortly.",
@@ -82,6 +110,7 @@ export default function Home() {
           (e.target as HTMLFormElement).reset();
         },
         onError: (error) => {
+          console.log("[Lead Error] Failed to create lead:", error);
           toast({
             title: "Submission failed",
             description:
@@ -104,6 +133,8 @@ export default function Home() {
       },
       {
         onSuccess: () => {
+          setHasCreatedLead(true);
+          localStorage.setItem("advaitam_lead_created", "true");
           setShowExitIntent(false);
           toast({
             title: "Thank you!",
@@ -111,6 +142,7 @@ export default function Home() {
           });
         },
         onError: (error) => {
+          console.log("[Lead Error] Failed to create lead:", error);
           toast({
             title: "Submission failed",
             description:
@@ -149,12 +181,12 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative min-h-[100dvh] flex items-center pt-20">
-        <div className="absolute inset-0 z-0">
+      <section className="relative min-h-dvh flex items-center pt-20">
+        <div className="hero-bg-animate absolute inset-0 z-0">
           <img
             src="/hero-bg.png"
             alt="Luxury forest villa aerial view"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover "
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background"></div>
         </div>
@@ -187,6 +219,7 @@ export default function Home() {
               <Button
                 size="lg"
                 variant="outline"
+                onClick={scrollToContact}
                 className="text-lg h-14 px-8 border-primary/30 hover:bg-primary/10"
               >
                 Book Site Visit <ArrowRight className="ml-2 w-5 h-5" />
@@ -204,10 +237,17 @@ export default function Home() {
       </section>
 
       {/* Scarcity & Features */}
-      <section className="py-24 bg-secondary/30 relative">
+      <AnimatedSection
+        direction="fade"
+        className="py-24 bg-secondary/30 relative"
+      >
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
+            <AnimatedSection
+              direction="right"
+              delay={0.2}
+              className="space-y-8"
+            >
               <h2 className="text-4xl font-serif font-bold">
                 The Definition of{" "}
                 <span className="text-primary italic">Exclusive</span>
@@ -218,22 +258,19 @@ export default function Home() {
                 compromising on uncompromising luxury.
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6">
-                {[
+              <AnimatedFeatureList
+                items={[
                   "Private Swimming Pool in Every Villa",
                   "Rooftop Garden Terrace",
                   "2070 Sq. Ft. Built-Up Area",
                   "Premium Finishes & Modular Kitchen",
-                ].map((feature, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <CheckCircle2 className="w-6 h-6 text-primary shrink-0" />
-                    <span className="font-medium">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                ]}
+                className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6"
+                staggerDelay={0.08}
+              />
+            </AnimatedSection>
 
-            <div className="relative">
+            <AnimatedSection direction="left" delay={0.2} className="relative">
               <div className="aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden relative shadow-2xl">
                 <img
                   src="/villa-exterior.png"
@@ -244,7 +281,7 @@ export default function Home() {
               </div>
               <div
                 ref={countRef}
-                className="absolute -bottom-8 -left-8 bg-card border border-border p-6 rounded-xl shadow-2xl animate-in slide-in-from-bottom-8"
+                className="absolute -bottom-8 -left-8 bg-card border border-border p-6 rounded-xl shadow-2xl"
               >
                 <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
                   Current Availability
@@ -262,25 +299,33 @@ export default function Home() {
                   ></div>
                 </div>
               </div>
-            </div>
+            </AnimatedSection>
           </div>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* Immersion / Interior */}
-      <section className="py-32 relative">
+      <AnimatedSection direction="fade" className="py-32 relative">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="order-2 lg:order-1 relative h-[600px] rounded-2xl overflow-hidden">
+            <AnimatedSection
+              direction="right"
+              delay={0.3}
+              className="order-2 lg:order-1 relative h-[600px] rounded-2xl overflow-hidden"
+            >
               <img
                 src="/villa-interior.png"
                 alt="Villa interior"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
-            </div>
+            </AnimatedSection>
 
-            <div className="order-1 lg:order-2 space-y-8">
+            <AnimatedSection
+              direction="left"
+              delay={0.2}
+              className="order-1 lg:order-2 space-y-8"
+            >
               <h2 className="text-4xl md:text-5xl font-serif font-bold">
                 Where the Forest <br />
                 Meets the Firelight
@@ -292,38 +337,43 @@ export default function Home() {
                 enveloping you in warmth.
               </p>
 
-              <div className="p-6 bg-secondary/50 rounded-xl border border-border/50 backdrop-blur-sm">
+              <AnimatedSection
+                direction="up"
+                delay={0.4}
+                className="p-6 bg-secondary/50 rounded-xl border border-border/50 backdrop-blur-sm"
+              >
                 <h3 className="font-serif text-2xl mb-4 text-primary">
                   Location Advantages
                 </h3>
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-muted-foreground" /> ~5
-                    Hours Drive from Delhi NCR
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-muted-foreground" /> 10
-                    Minutes from Corbett Falls
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-muted-foreground" /> 30
-                    Minutes from Kainchi Dham
-                  </li>
-                </ul>
+                <AnimatedFeatureList
+                  items={[
+                    "~5 Hours Drive from Delhi NCR",
+                    "10 Minutes from Corbett Falls",
+                    "30 Minutes from Kainchi Dham",
+                  ]}
+                  staggerDelay={0.1}
+                />
                 <p className="mt-6 text-sm font-medium italic text-muted-foreground">
                   "Close enough for convenience. Far enough for peace."
                 </p>
-              </div>
-            </div>
+              </AnimatedSection>
+            </AnimatedSection>
           </div>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* Rooftop / Investment */}
-      <section className="py-24 bg-card border-y border-border">
+      <AnimatedSection
+        direction="fade"
+        className="py-24 bg-card border-y border-border"
+      >
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row gap-12 items-center">
-            <div className="flex-1 space-y-6">
+            <AnimatedSection
+              direction="right"
+              delay={0.2}
+              className="flex-1 space-y-6"
+            >
               <h2 className="text-4xl font-serif font-bold">
                 A Legacy Investment
               </h2>
@@ -332,26 +382,14 @@ export default function Home() {
                 professional property management, your villa works for you when
                 you're not there.
               </p>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <ChevronRight className="w-5 h-5 text-primary shrink-0 mt-0.5" />{" "}
-                  <span className="font-medium text-lg">
-                    10–15% Expected Appreciation
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <ChevronRight className="w-5 h-5 text-primary shrink-0 mt-0.5" />{" "}
-                  <span className="font-medium text-lg">
-                    High Demand for Luxury Airbnb Stays
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <ChevronRight className="w-5 h-5 text-primary shrink-0 mt-0.5" />{" "}
-                  <span className="font-medium text-lg">
-                    Hassle-Free Professional Management
-                  </span>
-                </li>
-              </ul>
+              <AnimatedFeatureList
+                items={[
+                  "10–15% Expected Appreciation",
+                  "High Demand for Luxury Airbnb Stays",
+                  "Hassle-Free Professional Management",
+                ]}
+                staggerDelay={0.08}
+              />
               <Button
                 onClick={scrollToContact}
                 variant="outline"
@@ -359,25 +397,33 @@ export default function Home() {
               >
                 Get Rental Income Projection
               </Button>
-            </div>
+            </AnimatedSection>
 
-            <div className="flex-1">
+            <AnimatedSection direction="left" delay={0.2} className="flex-1">
               <img
                 src="/rooftop-terrace.png"
                 alt="Rooftop terrace"
                 className="w-full h-auto rounded-2xl shadow-xl"
               />
-            </div>
+            </AnimatedSection>
           </div>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* Pricing & Form */}
       <section id="contact" className="py-32 relative">
         <div className="absolute inset-0 bg-background pointer-events-none"></div>
         <div className="container relative z-10 mx-auto px-4 md:px-6 max-w-5xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-card p-8 md:p-12 rounded-3xl border border-border shadow-2xl">
-            <div className="space-y-8">
+          <AnimatedSection
+            direction="fade"
+            delay={0.15}
+            className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-card p-8 md:p-12 rounded-3xl border border-border shadow-2xl"
+          >
+            <AnimatedSection
+              direction="right"
+              delay={0.2}
+              className="space-y-8"
+            >
               <div>
                 <h2 className="text-3xl font-serif font-bold mb-2">
                   Claim Your Sanctuary
@@ -418,9 +464,13 @@ export default function Home() {
                   | Corp: Noida
                 </div>
               </div>
-            </div>
+            </AnimatedSection>
 
-            <div className="bg-background p-8 rounded-2xl border border-border">
+            <AnimatedSection
+              direction="left"
+              delay={0.25}
+              className="bg-background p-8 rounded-2xl border border-border"
+            >
               <h3 className="text-xl font-bold mb-6">
                 Download Full Brochure & Floor Plans
               </h3>
@@ -487,8 +537,8 @@ export default function Home() {
                   WhatsApp
                 </Button>
               </form>
-            </div>
-          </div>
+            </AnimatedSection>
+          </AnimatedSection>
         </div>
       </section>
 
