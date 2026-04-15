@@ -1,6 +1,6 @@
-import { createLeadSchema, listLeadQuerySchema } from "../schemas";
-import { ensureLeadSchema, listLeads, createLead } from "../db";
-import { errorResponse, jsonResponse } from "../utils";
+import { createLeadSchema, listLeadQuerySchema } from "../../schemas";
+import { ensureLeadSchema, listLeads, createLead } from "../../db";
+import { errorResponse, jsonResponse } from "../../utils";
 
 export async function onRequest(context: any) {
   await ensureLeadSchema(context.env);
