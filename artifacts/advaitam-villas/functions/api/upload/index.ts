@@ -16,14 +16,9 @@ export async function onRequest(context: any) {
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
-    const section = formData.get("section") as string | null;
 
     if (!file) {
       return errorResponse("No file provided", 400);
-    }
-
-    if (!section) {
-      return errorResponse("Section parameter is required", 400);
     }
 
     // Validate file type (images and videos)
@@ -61,10 +56,13 @@ export async function onRequest(context: any) {
       return errorResponse("Supabase configuration missing", 500);
     }
 
+    // Determine media type folder based on file type (isVideo already declared above)
+    const mediaFolder = isVideo ? "videos" : "images";
+
     // Generate unique filename
     const timestamp = Date.now();
     const fileExt = file.name.split(".").pop() || "jpg";
-    const fileName = `${section}/${timestamp}.${fileExt}`;
+    const fileName = `${mediaFolder}/${timestamp}.${fileExt}`;
 
     // Upload to Supabase Storage
     const uploadUrl = `${supabaseUrl}/storage/v1/object/advaitam-images/${fileName}`;
@@ -93,7 +91,7 @@ export async function onRequest(context: any) {
     return jsonResponse({
       url: publicUrl,
       path: fileName,
-      section,
+      mediaType: isVideo ? "video" : "image",
     });
   } catch (error) {
     console.error("Upload error:", error);

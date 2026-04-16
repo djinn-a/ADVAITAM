@@ -32,7 +32,17 @@ export async function onRequest(context: any) {
 
   try {
     const url = new URL(request.url);
-    const section = url.searchParams.get("section");
+    const mediaType = url.searchParams.get("mediaType");
+
+    // Validate mediaType parameter
+    if (!mediaType || (mediaType !== "image" && mediaType !== "video")) {
+      return errorResponse(
+        "mediaType parameter must be 'image' or 'video'",
+        400,
+      );
+    }
+
+    const folder = mediaType === "video" ? "videos" : "images";
 
     const supabaseUrl = env.SUPABASE_URL;
     const supabaseKey = env.SUPABASE_SERVICE_KEY;
@@ -51,7 +61,7 @@ export async function onRequest(context: any) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        prefix: section ? `${section}/` : "",
+        prefix: `${folder}/`,
         limit: 100,
         offset: 0,
       }),
@@ -85,12 +95,11 @@ export async function onRequest(context: any) {
         return mimetype.startsWith("image/") || mimetype.startsWith("video/");
       })
       .map((file: any) => {
-        // Supabase list may return just the filename without the section prefix
+        // Supabase list returns just the filename without the folder prefix
         // We need to construct the full path for the public URL
-        const fullPath =
-          section && !file.name.startsWith(`${section}/`)
-            ? `${section}/${file.name}`
-            : file.name;
+        const fullPath = file.name.startsWith(`${folder}/`)
+          ? file.name
+          : `${folder}/${file.name}`;
         const publicUrl = `${supabaseUrl}/storage/v1/object/public/advaitam-images/${fullPath}`;
         return {
           name: file.name,
@@ -107,7 +116,7 @@ export async function onRequest(context: any) {
 
     return jsonResponse({
       images: media, // Keep as 'images' for backward compatibility
-      section,
+      mediaType,
       count: media.length,
     });
   } catch (error) {

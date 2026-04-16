@@ -151,13 +151,15 @@ function SectionEditor({
   };
 
   const openBucketDialog = async () => {
-    if (!section) return;
     setIsBucketDialogOpen(true);
     setLoadingBucket(true);
     try {
-      const response = await fetch(`/api/images?section=${section}`, {
-        credentials: "include",
-      });
+      const response = await fetch(
+        `/api/images?mediaType=${currentMediaType}`,
+        {
+          credentials: "include",
+        },
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch media");
       }
@@ -376,8 +378,7 @@ function SectionEditor({
               Select from Bucket
             </DialogTitle>
             <DialogDescription>
-              Choose an existing {currentMediaType} from the Supabase storage
-              bucket for this section.
+              Choose an existing {currentMediaType} from the common media pool.
             </DialogDescription>
           </DialogHeader>
 
@@ -390,7 +391,7 @@ function SectionEditor({
           ) : bucketMedia.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>No media found in this section's bucket.</p>
+              <p>No media found in the common pool.</p>
               <p className="text-sm mt-1">
                 Upload a file first to see it here.
               </p>
@@ -677,7 +678,6 @@ export default function Admin() {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("section", section);
 
       const response = await fetch("/api/upload", {
         method: "POST",
