@@ -414,6 +414,28 @@ components:
         footer_tagline:
           type: string
           description: "Footer tagline text"
+        # Location Section
+        location_heading:
+          type: string
+          description: "Location section heading"
+        location_description:
+          type: string
+          description: "Location section description"
+        location_latitude:
+          type: string
+          description: "Latitude for map pin (e.g., 29.6426 for Jim Corbett)"
+        location_longitude:
+          type: string
+          description: "Longitude for map pin (e.g., 78.9286 for Jim Corbett)"
+        location_google_maps_url:
+          type: string
+          description: "Customizable Google Maps URL for directions"
+        location_image_url:
+          type: string
+          description: "Location section image URL from Supabase"
+        location_video_url:
+          type: string
+          description: "Location section video URL from Supabase (MP4/WebM)"
       required:
         - whatsapp_phone
         - contact_email
@@ -541,3 +563,25 @@ components:
         footer_tagline:
           type: string
           description: "Footer tagline text"
+        # Location Section
+        location_heading:
+          type: string
+          description: "Location section heading"
+        location_description:
+          type: string
+          description: "Location section description"
+        location_latitude:
+          type: string
+          description: "Latitude for map pin"
+        location_longitude:
+          type: string
+          description: "Longitude for map pin"
+        location_google_maps_url:
+          type: string
+          description: "Customizable Google Maps URL for directions"
+        location_image_url:
+          type: string
+          description: "Location section image URL from Supabase"
+        location_video_url:
+          type: string
+          description: "Location section video URL from Supabase"

@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { AnimatedFeatureList } from "@/components/ui/animated-feature-list";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { LocationSection } from "@/components/LocationSection";
 import {
   MapPin,
   Trees,
@@ -137,6 +138,18 @@ export default function Home() {
   // Footer
   const footerTagline =
     settings?.footer_tagline || "Luxury Forest Villas in Jim Corbett.";
+
+  // Location Section
+  const locationHeading = settings?.location_heading || "Find Your Sanctuary";
+  const locationDescription =
+    settings?.location_description ||
+    "Nestled in the heart of Jim Corbett National Park, Advaitam offers an exclusive retreat surrounded by ancient forests and pristine wilderness.";
+  const locationLat = parseFloat(settings?.location_latitude || "29.6426");
+  const locationLon = parseFloat(settings?.location_longitude || "78.9286");
+  const locationGoogleMapsUrl =
+    settings?.location_google_maps_url ||
+    "https://maps.google.com/?q=Advaitam+Villas+Jim+Corbett";
+  const locationImageUrl = settings?.location_image_url;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -592,6 +605,16 @@ export default function Home() {
             </div>
           </div>
         </AnimatedSection>
+
+        {/* Location Section */}
+        <LocationSection
+          heading={locationHeading}
+          description={locationDescription}
+          lat={locationLat}
+          lon={locationLon}
+          googleMapsUrl={locationGoogleMapsUrl}
+          imageUrl={locationImageUrl}
+        />
 
         {/* Pricing & Form */}
         <section id="contact" className="py-32 relative">

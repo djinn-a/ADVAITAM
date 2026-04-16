@@ -543,6 +543,14 @@ export default function Admin() {
     pricing_subheading: "",
     // Footer
     footer_tagline: "",
+    // Location Section
+    location_heading: "",
+    location_description: "",
+    location_latitude: "",
+    location_longitude: "",
+    location_google_maps_url: "",
+    location_image_url: "",
+    location_video_url: "",
   });
 
   // Image upload state
@@ -554,6 +562,7 @@ export default function Admin() {
     features: "image",
     immersion: "image",
     investment: "image",
+    location: "image",
   });
 
   const queryClient = useQueryClient();
@@ -627,6 +636,14 @@ export default function Admin() {
         pricing_subheading: settings.pricing_subheading ?? "",
         // Footer
         footer_tagline: settings.footer_tagline ?? "",
+        // Location Section
+        location_heading: settings.location_heading ?? "",
+        location_description: settings.location_description ?? "",
+        location_latitude: settings.location_latitude ?? "",
+        location_longitude: settings.location_longitude ?? "",
+        location_google_maps_url: settings.location_google_maps_url ?? "",
+        location_image_url: settings.location_image_url ?? "",
+        location_video_url: settings.location_video_url ?? "",
       });
 
       // Sync mediaTypes with loaded settings - determine if video or image based on which URL is set
@@ -645,6 +662,10 @@ export default function Admin() {
             : "image",
         investment:
           settings.investment_video_url && !settings.investment_image_url
+            ? "video"
+            : "image",
+        location:
+          settings.location_video_url && !settings.location_image_url
             ? "video"
             : "image",
       });
@@ -1690,6 +1711,106 @@ export default function Admin() {
                       })
                     }
                     placeholder="Luxury Forest Villas in Jim Corbett."
+                    className="bg-background"
+                  />
+                </div>
+              </div>
+            </SectionEditor>
+
+            <SectionEditor
+              title="Location Section"
+              icon={<Layout className="w-5 h-5" />}
+              isLoading={isLoadingSettings}
+              imageUrl={settingsForm.location_image_url}
+              videoUrl={settingsForm.location_video_url}
+              mediaType={mediaTypes.location}
+              onMediaTypeChange={(type) =>
+                handleMediaTypeChange("location", type)
+              }
+              onMediaUpload={(file: File) =>
+                handleMediaUpload("location", file)
+              }
+              uploading={uploadingSection === "location"}
+              section="location"
+              onSelectFromBucket={(url: string, contentType: string) =>
+                handleSelectFromBucket("location", url, contentType)
+              }
+              onClearMedia={() => handleClearMedia("location")}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Heading
+                  </label>
+                  <Input
+                    value={settingsForm.location_heading}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        location_heading: e.target.value,
+                      })
+                    }
+                    placeholder="Find Your Sanctuary"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Description
+                  </label>
+                  <Textarea
+                    value={settingsForm.location_description}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        location_description: e.target.value,
+                      })
+                    }
+                    placeholder="Nestled in the heart of Jim Corbett National Park..."
+                    className="bg-background min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Latitude</label>
+                  <Input
+                    value={settingsForm.location_latitude}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        location_latitude: e.target.value,
+                      })
+                    }
+                    placeholder="29.6426"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Longitude</label>
+                  <Input
+                    value={settingsForm.location_longitude}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        location_longitude: e.target.value,
+                      })
+                    }
+                    placeholder="78.9286"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Google Maps URL
+                  </label>
+                  <Input
+                    value={settingsForm.location_google_maps_url}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        location_google_maps_url: e.target.value,
+                      })
+                    }
+                    placeholder="https://maps.google.com/?q=Advaitam+Villas+Jim+Corbett"
                     className="bg-background"
                   />
                 </div>

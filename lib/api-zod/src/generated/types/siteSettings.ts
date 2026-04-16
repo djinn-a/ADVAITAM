@@ -77,4 +77,18 @@ export interface SiteSettings {
   pricing_subheading?: string;
   /** Footer tagline text */
   footer_tagline?: string;
+  /** Location section heading */
+  location_heading?: string;
+  /** Location section description */
+  location_description?: string;
+  /** Latitude for map pin (e.g., 29.6426 for Jim Corbett) */
+  location_latitude?: string;
+  /** Longitude for map pin (e.g., 78.9286 for Jim Corbett) */
+  location_longitude?: string;
+  /** Customizable Google Maps URL for directions */
+  location_google_maps_url?: string;
+  /** Location section image URL from Supabase */
+  location_image_url?: string;
+  /** Location section video URL from Supabase (MP4/WebM) */
+  location_video_url?: string;
 }

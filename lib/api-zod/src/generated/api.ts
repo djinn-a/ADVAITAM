@@ -162,7 +162,14 @@ export const GetSiteSettingsResponse = zod.object({
   "investment_video_url": zod.string().optional().describe('Investment section video URL from Supabase (MP4\/WebM)'),
   "pricing_heading": zod.string().optional().describe('Pricing section heading'),
   "pricing_subheading": zod.string().optional().describe('Pricing section subheading'),
-  "footer_tagline": zod.string().optional().describe('Footer tagline text')
+  "footer_tagline": zod.string().optional().describe('Footer tagline text'),
+  "location_heading": zod.string().optional().describe('Location section heading'),
+  "location_description": zod.string().optional().describe('Location section description'),
+  "location_latitude": zod.string().optional().describe('Latitude for map pin (e.g., 29.6426 for Jim Corbett)'),
+  "location_longitude": zod.string().optional().describe('Longitude for map pin (e.g., 78.9286 for Jim Corbett)'),
+  "location_google_maps_url": zod.string().optional().describe('Customizable Google Maps URL for directions'),
+  "location_image_url": zod.string().optional().describe('Location section image URL from Supabase'),
+  "location_video_url": zod.string().optional().describe('Location section video URL from Supabase (MP4\/WebM)')
 })
 
 
@@ -204,7 +211,14 @@ export const UpdateSiteSettingsBody = zod.object({
   "investment_video_url": zod.string().optional().describe('Investment section video URL from Supabase (MP4\/WebM)'),
   "pricing_heading": zod.string().optional().describe('Pricing section heading'),
   "pricing_subheading": zod.string().optional().describe('Pricing section subheading'),
-  "footer_tagline": zod.string().optional().describe('Footer tagline text')
+  "footer_tagline": zod.string().optional().describe('Footer tagline text'),
+  "location_heading": zod.string().optional().describe('Location section heading'),
+  "location_description": zod.string().optional().describe('Location section description'),
+  "location_latitude": zod.string().optional().describe('Latitude for map pin'),
+  "location_longitude": zod.string().optional().describe('Longitude for map pin'),
+  "location_google_maps_url": zod.string().optional().describe('Customizable Google Maps URL for directions'),
+  "location_image_url": zod.string().optional().describe('Location section image URL from Supabase'),
+  "location_video_url": zod.string().optional().describe('Location section video URL from Supabase')
 })
 
 export const UpdateSiteSettingsResponse = zod.object({
@@ -242,7 +256,14 @@ export const UpdateSiteSettingsResponse = zod.object({
   "investment_video_url": zod.string().optional().describe('Investment section video URL from Supabase (MP4\/WebM)'),
   "pricing_heading": zod.string().optional().describe('Pricing section heading'),
   "pricing_subheading": zod.string().optional().describe('Pricing section subheading'),
-  "footer_tagline": zod.string().optional().describe('Footer tagline text')
+  "footer_tagline": zod.string().optional().describe('Footer tagline text'),
+  "location_heading": zod.string().optional().describe('Location section heading'),
+  "location_description": zod.string().optional().describe('Location section description'),
+  "location_latitude": zod.string().optional().describe('Latitude for map pin (e.g., 29.6426 for Jim Corbett)'),
+  "location_longitude": zod.string().optional().describe('Longitude for map pin (e.g., 78.9286 for Jim Corbett)'),
+  "location_google_maps_url": zod.string().optional().describe('Customizable Google Maps URL for directions'),
+  "location_image_url": zod.string().optional().describe('Location section image URL from Supabase'),
+  "location_video_url": zod.string().optional().describe('Location section video URL from Supabase (MP4\/WebM)')
 })
 
 
