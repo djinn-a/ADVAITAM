@@ -41,12 +41,29 @@ export default function Home() {
   const createLead = useCreateLead();
 
   // Derived values from settings
-  const whatsappNumber = settings?.whatsapp_phone || "919217567788";
+  const whatsappNumber = String(settings?.whatsapp_phone || "919217567788");
+
+  // Safely parse location_advantages (handle both array and JSON string)
+  const locationAdvantages = (() => {
+    const raw = settings?.location_advantages;
+    if (!raw) return null;
+    if (Array.isArray(raw)) return raw;
+    if (typeof raw === "string") {
+      try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  })();
   const contactEmail = settings?.contact_email || "info@advaitamvillas.com";
-  const discountPricing = settings?.discount_pricing || "15";
-  const discountExitIntent = settings?.discount_exit_intent || "15L";
+  const discountPricing = String(settings?.discount_pricing || "15");
+  const discountExitIntent = String(settings?.discount_exit_intent || "15L");
+  const basePrice = String(settings?.base_price || "1.50");
   const offerPrice = (
-    1.5 -
+    parseFloat(basePrice) -
     parseInt(discountPricing || "15", 10) / 100
   ).toFixed(2);
 
@@ -131,6 +148,10 @@ export default function Home() {
             description: "We'll reach out to you shortly.",
           });
           (e.target as HTMLFormElement).reset();
+          // Redirect to brochure PDF if available
+          if (settings?.pdf_google_drive_link) {
+            window.open(settings.pdf_google_drive_link, "_blank");
+          }
         },
         onError: (error) => {
           console.log("[Lead Error] Failed to create lead:", error);
@@ -394,11 +415,13 @@ export default function Home() {
                     Location Advantages
                   </h3>
                   <AnimatedFeatureList
-                    items={[
-                      "~5 Hours Drive from Delhi NCR",
-                      "10 Minutes from Corbett Falls",
-                      "30 Minutes from Kainchi Dham",
-                    ]}
+                    items={
+                      locationAdvantages || [
+                        "~5 Hours Drive from Delhi NCR",
+                        "10 Minutes from Corbett Falls",
+                        "30 Minutes from Kainchi Dham",
+                      ]
+                    }
                     staggerDelay={0.1}
                   />
                   <p className="mt-6 text-sm font-medium italic text-muted-foreground">
@@ -487,7 +510,7 @@ export default function Home() {
                 <div className="space-y-4 bg-secondary/50 p-6 rounded-xl">
                   <div className="flex justify-between items-center text-muted-foreground line-through">
                     <span>Base Price</span>
-                    <span>₹1.50 Cr</span>
+                    <span>₹{basePrice} Cr</span>
                   </div>
                   <div className="flex justify-between items-center text-primary font-medium">
                     <span>Special Discount</span>
@@ -505,8 +528,10 @@ export default function Home() {
 
                 <div className="space-y-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-3">
-                    <Phone className="w-4 h-4" /> +{whatsappNumber.slice(0, 2)}{" "}
-                    {whatsappNumber.slice(2, 7)} {whatsappNumber.slice(7)}
+                    <Phone className="w-4 h-4" /> +
+                    {String(whatsappNumber).slice(0, 2)}{" "}
+                    {String(whatsappNumber).slice(2, 7)}{" "}
+                    {String(whatsappNumber).slice(7)}
                   </div>
                   <div className="flex items-center gap-3">
                     <MessageCircle className="w-4 h-4" /> {contactEmail}

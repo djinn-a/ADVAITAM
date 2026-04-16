@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "start": "./start.sh",
+    "deploy": "./deploy.sh",
     "dev": "vite --config vite.config.ts --host 0.0.0.0",
     "build": "vite build --config vite.config.ts",
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
     "pages:dev": "wrangler pages dev dist --d1 D1",
+    "pages:deploy": "wrangler pages deploy dist --project-name advaitam-villas --branch main",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {

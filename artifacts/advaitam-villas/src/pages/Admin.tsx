@@ -97,6 +97,9 @@ export default function Admin() {
     current_availability: "",
     discount_pricing: "",
     discount_exit_intent: "",
+    base_price: "",
+    location_advantages: [""],
+    pdf_google_drive_link: "",
   });
 
   const queryClient = useQueryClient();
@@ -133,6 +136,9 @@ export default function Admin() {
         current_availability: settings.current_availability || "",
         discount_pricing: settings.discount_pricing || "",
         discount_exit_intent: settings.discount_exit_intent || "",
+        base_price: settings.base_price || "",
+        location_advantages: settings.location_advantages || [""],
+        pdf_google_drive_link: settings.pdf_google_drive_link || "",
       });
     }
   }, [settings]);
@@ -716,6 +722,118 @@ export default function Admin() {
                         <p className="text-xs text-muted-foreground">
                           Text shown in exit intent popup (e.g., 15L or ₹15L
                           Discount)
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                          Base Price (in Crores)
+                        </label>
+                        <Input
+                          value={settingsForm.base_price}
+                          onChange={(e) =>
+                            setSettingsForm({
+                              ...settingsForm,
+                              base_price: e.target.value,
+                            })
+                          }
+                          placeholder="1.50"
+                          className="bg-background"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Base price in Crores (e.g., 1.50)
+                        </p>
+                      </div>
+
+                      <div className="space-y-2 md:col-span-2">
+                        <label className="text-sm font-medium">
+                          Location Advantages
+                        </label>
+                        <div className="space-y-2">
+                          {settingsForm.location_advantages.map(
+                            (advantage, index) => (
+                              <div key={index} className="flex gap-2">
+                                <Input
+                                  value={advantage}
+                                  onChange={(e) => {
+                                    const newAdvantages = [
+                                      ...settingsForm.location_advantages,
+                                    ];
+                                    newAdvantages[index] = e.target.value;
+                                    setSettingsForm({
+                                      ...settingsForm,
+                                      location_advantages: newAdvantages,
+                                    });
+                                  }}
+                                  placeholder={`Location advantage ${index + 1}`}
+                                  className="bg-background"
+                                />
+                                {settingsForm.location_advantages.length >
+                                  1 && (
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => {
+                                      const newAdvantages =
+                                        settingsForm.location_advantages.filter(
+                                          (_, i) => i !== index,
+                                        );
+                                      setSettingsForm({
+                                        ...settingsForm,
+                                        location_advantages:
+                                          newAdvantages.length > 0
+                                            ? newAdvantages
+                                            : [""],
+                                      });
+                                    }}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                )}
+                              </div>
+                            ),
+                          )}
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() =>
+                              setSettingsForm({
+                                ...settingsForm,
+                                location_advantages: [
+                                  ...settingsForm.location_advantages,
+                                  "",
+                                ],
+                              })
+                            }
+                          >
+                            Add Location Advantage
+                          </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Add multiple location advantages that will be
+                          displayed on the home page
+                        </p>
+                      </div>
+
+                      <div className="space-y-2 md:col-span-2">
+                        <label className="text-sm font-medium">
+                          PDF Brochure Google Drive Link
+                        </label>
+                        <Input
+                          value={settingsForm.pdf_google_drive_link}
+                          onChange={(e) =>
+                            setSettingsForm({
+                              ...settingsForm,
+                              pdf_google_drive_link: e.target.value,
+                            })
+                          }
+                          placeholder="https://drive.google.com/file/d/.../view"
+                          className="bg-background"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Google Drive link to the PDF brochure. Make sure the
+                          link is publicly accessible.
                         </p>
                       </div>
                     </div>

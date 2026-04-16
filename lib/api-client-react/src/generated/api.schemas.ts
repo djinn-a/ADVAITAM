@@ -72,6 +72,12 @@ export interface SiteSettings {
   discount_pricing: string;
   /** Discount text for exit intent popup */
   discount_exit_intent: string;
+  /** Base price in Crores (e.g., 1.50) */
+  base_price?: string;
+  /** List of location advantages */
+  location_advantages?: string[];
+  /** Google Drive link to PDF brochure */
+  pdf_google_drive_link?: string;
 }
 
 export interface UpdateSiteSettingsBody {
@@ -85,6 +91,12 @@ export interface UpdateSiteSettingsBody {
   discount_pricing?: string;
   /** Discount text for exit intent popup */
   discount_exit_intent?: string;
+  /** Base price in Crores */
+  base_price?: string;
+  /** List of location advantages */
+  location_advantages?: string[];
+  /** Google Drive link to PDF brochure */
+  pdf_google_drive_link?: string;
 }
 
 export type ListLeadsParams = {

@@ -132,7 +132,10 @@ export const GetSiteSettingsResponse = zod.object({
   "contact_email": zod.string().describe('Contact email address'),
   "current_availability": zod.string().describe('Current villa availability count (0-17)'),
   "discount_pricing": zod.string().describe('Discount amount for pricing section (in Lakhs)'),
-  "discount_exit_intent": zod.string().describe('Discount text for exit intent popup')
+  "discount_exit_intent": zod.string().describe('Discount text for exit intent popup'),
+  "base_price": zod.string().optional().describe('Base price in Crores (e.g., 1.50)'),
+  "location_advantages": zod.array(zod.string()).optional().describe('List of location advantages'),
+  "pdf_google_drive_link": zod.string().optional().describe('Google Drive link to PDF brochure')
 })
 
 
@@ -144,7 +147,10 @@ export const UpdateSiteSettingsBody = zod.object({
   "contact_email": zod.string().optional().describe('Contact email address'),
   "current_availability": zod.string().optional().describe('Current villa availability count'),
   "discount_pricing": zod.string().optional().describe('Discount amount for pricing section'),
-  "discount_exit_intent": zod.string().optional().describe('Discount text for exit intent popup')
+  "discount_exit_intent": zod.string().optional().describe('Discount text for exit intent popup'),
+  "base_price": zod.string().optional().describe('Base price in Crores'),
+  "location_advantages": zod.array(zod.string()).optional().describe('List of location advantages'),
+  "pdf_google_drive_link": zod.string().optional().describe('Google Drive link to PDF brochure')
 })
 
 export const UpdateSiteSettingsResponse = zod.object({
@@ -152,7 +158,10 @@ export const UpdateSiteSettingsResponse = zod.object({
   "contact_email": zod.string().describe('Contact email address'),
   "current_availability": zod.string().describe('Current villa availability count (0-17)'),
   "discount_pricing": zod.string().describe('Discount amount for pricing section (in Lakhs)'),
-  "discount_exit_intent": zod.string().describe('Discount text for exit intent popup')
+  "discount_exit_intent": zod.string().describe('Discount text for exit intent popup'),
+  "base_price": zod.string().optional().describe('Base price in Crores (e.g., 1.50)'),
+  "location_advantages": zod.array(zod.string()).optional().describe('List of location advantages'),
+  "pdf_google_drive_link": zod.string().optional().describe('Google Drive link to PDF brochure')
 })
 
 

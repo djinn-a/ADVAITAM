@@ -26,16 +26,40 @@ export const listLeadQuerySchema = z.object({
 export const siteSettingsSchema = z
   .object({
     whatsapp_phone: z
-      .string()
-      .regex(/^\d+$/, "Phone must be numbers only")
+      .union([z.string(), z.number()])
+      .transform((val) => (typeof val === "number" ? val.toString() : val))
+      .refine((val) => /^\d+$/.test(val), {
+        message: "Phone must be numbers only",
+      })
       .optional(),
     contact_email: z.string().email().optional(),
     current_availability: z
-      .string()
-      .regex(/^\d+$/, "Must be a number")
+      .union([z.string(), z.number()])
+      .transform((val) => (typeof val === "number" ? val.toString() : val))
+      .refine((val) => /^\d+$/.test(val), { message: "Must be a number" })
       .optional(),
-    discount_pricing: z.string().optional(),
-    discount_exit_intent: z.string().optional(),
+    discount_pricing: z
+      .union([z.string(), z.number()])
+      .transform((val) => (typeof val === "number" ? val.toString() : val))
+      .optional(),
+    discount_exit_intent: z
+      .union([z.string(), z.number()])
+      .transform((val) => (typeof val === "number" ? val.toString() : val))
+      .optional(),
+    base_price: z
+      .union([z.string(), z.number()])
+      .transform((val) => (typeof val === "number" ? val.toString() : val))
+      .refine((val) => /^\d+(\.\d+)?$/.test(val), {
+        message: "Must be a valid number",
+      })
+      .optional(),
+    location_advantages: z.array(z.string()).optional(),
+    pdf_google_drive_link: z
+      .string()
+      .refine((val) => !val || /^https?:\/\/.+/.test(val), {
+        message: "Must be a valid URL",
+      })
+      .optional(),
   })
   .refine((data) => Object.keys(data).length > 0, {
     message: "At least one setting must be provided.",

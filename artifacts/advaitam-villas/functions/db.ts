@@ -212,13 +212,17 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   discount_exit_intent: "15L",
 };
 
-export async function getAllSettings(
-  env: any,
-): Promise<Record<string, string>> {
+export async function getAllSettings(env: any): Promise<Record<string, any>> {
   const result = await env.D1.prepare("SELECT * FROM site_settings").all();
-  const settings: Record<string, string> = { ...DEFAULT_SETTINGS };
+  const settings: Record<string, any> = { ...DEFAULT_SETTINGS };
   for (const row of result.results ?? []) {
-    settings[row.key] = row.value;
+    // Try to parse JSON for array/object values
+    try {
+      const parsed = JSON.parse(row.value);
+      settings[row.key] = parsed;
+    } catch {
+      settings[row.key] = row.value;
+    }
   }
   return settings;
 }
@@ -237,9 +241,14 @@ export async function updateSetting(
 
 export async function updateMultipleSettings(
   env: any,
-  settings: Record<string, string>,
+  settings: Record<string, any>,
 ): Promise<void> {
   for (const [key, value] of Object.entries(settings)) {
-    await updateSetting(env, key, value);
+    // JSON stringify arrays/objects for storage
+    const serialized =
+      Array.isArray(value) || typeof value === "object"
+        ? JSON.stringify(value)
+        : String(value);
+    await updateSetting(env, key, serialized);
   }
 }
