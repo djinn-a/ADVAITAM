@@ -342,6 +342,9 @@ components:
         hero_image_url:
           type: string
           description: "Hero background image URL from Supabase"
+        hero_video_url:
+          type: string
+          description: "Hero background video URL from Supabase (MP4/WebM)"
         # Features Section
         features_heading:
           type: string
@@ -357,6 +360,9 @@ components:
         features_image_url:
           type: string
           description: "Features section image URL from Supabase"
+        features_video_url:
+          type: string
+          description: "Features section video URL from Supabase (MP4/WebM)"
         # Immersion Section
         immersion_heading:
           type: string
@@ -373,6 +379,9 @@ components:
         immersion_image_url:
           type: string
           description: "Immersion section image URL from Supabase"
+        immersion_video_url:
+          type: string
+          description: "Immersion section video URL from Supabase (MP4/WebM)"
         # Investment Section
         investment_heading:
           type: string
@@ -391,6 +400,9 @@ components:
         investment_image_url:
           type: string
           description: "Investment section image URL from Supabase"
+        investment_video_url:
+          type: string
+          description: "Investment section video URL from Supabase (MP4/WebM)"
         # Pricing Section
         pricing_heading:
           type: string
@@ -457,6 +469,9 @@ components:
         hero_image_url:
           type: string
           description: "Hero background image URL from Supabase"
+        hero_video_url:
+          type: string
+          description: "Hero background video URL from Supabase (MP4/WebM)"
         # Features Section
         features_heading:
           type: string
@@ -472,6 +487,9 @@ components:
         features_image_url:
           type: string
           description: "Features section image URL from Supabase"
+        features_video_url:
+          type: string
+          description: "Features section video URL from Supabase (MP4/WebM)"
         # Immersion Section
         immersion_heading:
           type: string
@@ -488,6 +506,9 @@ components:
         immersion_image_url:
           type: string
           description: "Immersion section image URL from Supabase"
+        immersion_video_url:
+          type: string
+          description: "Immersion section video URL from Supabase (MP4/WebM)"
         # Investment Section
         investment_heading:
           type: string
@@ -506,6 +527,9 @@ components:
         investment_image_url:
           type: string
           description: "Investment section image URL from Supabase"
+        investment_video_url:
+          type: string
+          description: "Investment section video URL from Supabase (MP4/WebM)"
         # Pricing Section
         pricing_heading:
           type: string

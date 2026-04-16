@@ -79,6 +79,7 @@ export default function Home() {
   const heroCtaPrimary = settings?.hero_cta_primary || "Get Brochure";
   const heroCtaSecondary = settings?.hero_cta_secondary || "Book Site Visit";
   const heroImageUrl = settings?.hero_image_url || "/hero-bg.png";
+  const heroVideoUrl = settings?.hero_video_url;
 
   // Features Section
   const featuresHeading =
@@ -94,6 +95,7 @@ export default function Home() {
   ];
   const featuresImageUrl =
     settings?.features_image_url || "/villa-exterior.png";
+  const featuresVideoUrl = settings?.features_video_url;
 
   // Immersion Section
   const immersionHeading =
@@ -108,6 +110,7 @@ export default function Home() {
     '"Close enough for convenience. Far enough for peace."';
   const immersionImageUrl =
     settings?.immersion_image_url || "/villa-interior.png";
+  const immersionVideoUrl = settings?.immersion_video_url;
 
   // Investment Section
   const investmentHeading =
@@ -124,6 +127,7 @@ export default function Home() {
     settings?.investment_cta || "Get Rental Income Projection";
   const investmentImageUrl =
     settings?.investment_image_url || "/rooftop-terrace.png";
+  const investmentVideoUrl = settings?.investment_video_url;
 
   // Pricing Section
   const pricingHeading = settings?.pricing_heading || "Claim Your Sanctuary";
@@ -298,15 +302,27 @@ export default function Home() {
           aria-labelledby="hero-title"
         >
           <div className="hero-bg-animate absolute inset-0 z-0">
-            <img
-              src={heroImageUrl}
-              alt="Aerial view of luxury forest villa with private swimming pool surrounded by lush green trees in Jim Corbett"
-              className="w-full h-full object-cover"
-              loading="eager"
-              fetchPriority="high"
-              width="1920"
-              height="1080"
-            />
+            {heroVideoUrl ? (
+              <video
+                src={heroVideoUrl}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+                poster={heroImageUrl}
+              />
+            ) : (
+              <img
+                src={heroImageUrl}
+                alt="Aerial view of luxury forest villa with private swimming pool surrounded by lush green trees in Jim Corbett"
+                className="w-full h-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+                width="1920"
+                height="1080"
+              />
+            )}
             <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background"></div>
           </div>
 
@@ -398,14 +414,26 @@ export default function Home() {
                 className="relative"
               >
                 <div className="aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden relative shadow-2xl">
-                  <img
-                    src={featuresImageUrl}
-                    alt="Luxury villa exterior with private swimming pool and landscaped gardens at sunset"
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    width="800"
-                    height="600"
-                  />
+                  {featuresVideoUrl ? (
+                    <video
+                      src={featuresVideoUrl}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover"
+                      poster={featuresImageUrl}
+                    />
+                  ) : (
+                    <img
+                      src={featuresImageUrl}
+                      alt="Luxury villa exterior with private swimming pool and landscaped gardens at sunset"
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      width="800"
+                      height="600"
+                    />
+                  )}
                   <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl"></div>
                 </div>
                 <div
@@ -446,14 +474,26 @@ export default function Home() {
                 delay={0.3}
                 className="order-2 lg:order-1 relative h-[600px] rounded-2xl overflow-hidden"
               >
-                <img
-                  src={immersionImageUrl}
-                  alt="Spacious villa interior with floor-to-ceiling windows overlooking forest and mountains"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  width="800"
-                  height="800"
-                />
+                {immersionVideoUrl ? (
+                  <video
+                    src={immersionVideoUrl}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="w-full h-full object-cover"
+                    poster={immersionImageUrl}
+                  />
+                ) : (
+                  <img
+                    src={immersionImageUrl}
+                    alt="Spacious villa interior with floor-to-ceiling windows overlooking forest and mountains"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    width="800"
+                    height="800"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
               </AnimatedSection>
 
@@ -528,14 +568,26 @@ export default function Home() {
               </AnimatedSection>
 
               <AnimatedSection direction="left" delay={0.2} className="flex-1">
-                <img
-                  src={investmentImageUrl}
-                  alt="Rooftop terrace garden with panoramic views of Jim Corbett forest and mountains"
-                  className="w-full h-auto rounded-2xl shadow-xl"
-                  loading="lazy"
-                  width="800"
-                  height="600"
-                />
+                {investmentVideoUrl ? (
+                  <video
+                    src={investmentVideoUrl}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="w-full h-auto rounded-2xl shadow-xl"
+                    poster={investmentImageUrl}
+                  />
+                ) : (
+                  <img
+                    src={investmentImageUrl}
+                    alt="Rooftop terrace garden with panoramic views of Jim Corbett forest and mountains"
+                    className="w-full h-auto rounded-2xl shadow-xl"
+                    loading="lazy"
+                    width="800"
+                    height="600"
+                  />
+                )}
               </AnimatedSection>
             </div>
           </div>

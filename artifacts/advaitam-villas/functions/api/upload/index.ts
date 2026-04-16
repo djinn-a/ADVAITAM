@@ -26,19 +26,32 @@ export async function onRequest(context: any) {
       return errorResponse("Section parameter is required", 400);
     }
 
-    // Validate file type
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+    // Validate file type (images and videos)
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/jpg",
+      "video/mp4",
+      "video/webm",
+    ];
     if (!allowedTypes.includes(file.type)) {
       return errorResponse(
-        "Invalid file type. Only JPEG, PNG, and WebP are allowed",
-        400
+        "Invalid file type. Only JPEG, PNG, WebP, MP4, and WebM are allowed",
+        400,
       );
     }
 
-    // Validate file size (5MB max)
-    const maxSize = 5 * 1024 * 1024;
+    // Validate file size (5MB for images, 50MB for videos)
+    const isVideo = file.type.startsWith("video/");
+    const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      return errorResponse("File size exceeds 5MB limit", 400);
+      return errorResponse(
+        isVideo
+          ? "File size exceeds 50MB limit"
+          : "File size exceeds 5MB limit",
+        400,
+      );
     }
 
     const supabaseUrl = env.SUPABASE_URL;

@@ -86,7 +86,7 @@ import {
 } from "@workspace/api-client-react";
 
 // Section Editor Component
-interface BucketImage {
+interface BucketMedia {
   name: string;
   url: string;
   updatedAt: string;
@@ -94,16 +94,22 @@ interface BucketImage {
   contentType: string;
 }
 
+type MediaType = "image" | "video";
+
 interface SectionEditorProps {
   title: string;
   icon: React.ReactNode;
   children: React.ReactNode;
   isLoading: boolean;
   imageUrl?: string;
-  onImageUpload?: (file: File) => void;
+  videoUrl?: string;
+  mediaType?: MediaType;
+  onMediaTypeChange?: (type: MediaType) => void;
+  onMediaUpload?: (file: File) => void;
   uploading?: boolean;
   section?: string;
-  onSelectFromBucket?: (url: string) => void;
+  onSelectFromBucket?: (url: string, contentType: string) => void;
+  onClearMedia?: () => void;
 }
 
 function SectionEditor({
@@ -112,24 +118,36 @@ function SectionEditor({
   children,
   isLoading,
   imageUrl,
-  onImageUpload,
+  videoUrl,
+  mediaType,
+  onMediaTypeChange,
+  onMediaUpload,
   uploading,
   section,
   onSelectFromBucket,
+  onClearMedia,
 }: SectionEditorProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [isBucketDialogOpen, setIsBucketDialogOpen] = React.useState(false);
-  const [bucketImages, setBucketImages] = React.useState<BucketImage[]>([]);
+  const [bucketMedia, setBucketMedia] = React.useState<BucketMedia[]>([]);
   const [loadingBucket, setLoadingBucket] = React.useState(false);
-  const [selectedBucketImage, setSelectedBucketImage] = React.useState<
-    string | null
-  >(null);
+  const [selectedBucketMedia, setSelectedBucketMedia] =
+    React.useState<BucketMedia | null>(null);
+
+  const currentMediaType = mediaType || "image";
+  const currentMediaUrl = currentMediaType === "video" ? videoUrl : imageUrl;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && onImageUpload) {
-      onImageUpload(file);
+    if (file && onMediaUpload) {
+      onMediaUpload(file);
     }
+  };
+
+  const getFileAcceptTypes = () => {
+    return currentMediaType === "video"
+      ? "video/mp4,video/webm"
+      : "image/jpeg,image/png,image/webp";
   };
 
   const openBucketDialog = async () => {
@@ -141,23 +159,96 @@ function SectionEditor({
         credentials: "include",
       });
       if (!response.ok) {
-        throw new Error("Failed to fetch images");
+        throw new Error("Failed to fetch media");
       }
       const data = await response.json();
-      setBucketImages(data.images || []);
+      const media = data.images || [];
+      setBucketMedia(media);
+      // Pre-select the current media if it exists in the bucket
+      if (currentMediaUrl) {
+        const currentMedia = media.find(
+          (m: BucketMedia) => m.url === currentMediaUrl,
+        );
+        if (currentMedia) {
+          setSelectedBucketMedia(currentMedia);
+        }
+      }
     } catch (error) {
-      console.error("Error fetching bucket images:", error);
+      console.error("Error fetching bucket media:", error);
     } finally {
       setLoadingBucket(false);
     }
   };
 
-  const handleSelectImage = () => {
-    if (selectedBucketImage && onSelectFromBucket) {
-      onSelectFromBucket(selectedBucketImage);
+  const handleSelectMedia = () => {
+    if (selectedBucketMedia && onSelectFromBucket) {
+      onSelectFromBucket(
+        selectedBucketMedia.url,
+        selectedBucketMedia.contentType,
+      );
     }
     setIsBucketDialogOpen(false);
-    setSelectedBucketImage(null);
+    setSelectedBucketMedia(null);
+  };
+
+  const isVideo = (contentType: string) => contentType.startsWith("video/");
+
+  const renderPreview = () => {
+    if (currentMediaType === "video" && videoUrl) {
+      return (
+        <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border bg-black">
+          <video
+            src={videoUrl}
+            className="w-full h-full object-cover"
+            muted
+            playsInline
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-black/50 rounded-full p-2">
+              <svg
+                className="w-6 h-6 text-white"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (currentMediaType === "image" && imageUrl) {
+      return (
+        <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border">
+          <img
+            src={imageUrl}
+            alt={title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      );
+    }
+    return (
+      <div className="w-32 h-32 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-secondary/30">
+        {currentMediaType === "video" ? (
+          <svg
+            className="w-8 h-8 text-muted-foreground"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+            />
+          </svg>
+        ) : (
+          <ImageIcon className="w-8 h-8 text-muted-foreground" />
+        )}
+      </div>
+    );
   };
 
   return (
@@ -176,31 +267,48 @@ function SectionEditor({
           </div>
         ) : (
           <>
-            {onImageUpload && (
-              <div className="space-y-2">
+            {onMediaUpload && (
+              <div className="space-y-3">
                 <label className="text-sm font-medium flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4" /> Section Image
+                  <ImageIcon className="w-4 h-4" /> Section Media
                 </label>
+
+                {/* Media Type Toggle - only show when media type can be changed */}
+                {onMediaTypeChange && (
+                  <div className="flex items-center gap-2 p-1 bg-secondary/50 rounded-lg w-fit">
+                    <button
+                      type="button"
+                      onClick={() => onMediaTypeChange("image")}
+                      className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+                        currentMediaType === "image"
+                          ? "bg-background text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Image
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onMediaTypeChange("video")}
+                      className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+                        currentMediaType === "video"
+                          ? "bg-background text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Video
+                    </button>
+                  </div>
+                )}
+
                 <div className="flex items-center gap-4">
-                  {imageUrl ? (
-                    <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border">
-                      <img
-                        src={imageUrl}
-                        alt={title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-32 h-32 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-secondary/30">
-                      <ImageIcon className="w-8 h-8 text-muted-foreground" />
-                    </div>
-                  )}
+                  {renderPreview()}
                   <div className="flex flex-col gap-2">
                     <input
                       type="file"
                       ref={fileInputRef}
                       onChange={handleFileChange}
-                      accept="image/jpeg,image/png,image/webp"
+                      accept={getFileAcceptTypes()}
                       className="hidden"
                     />
                     <div className="flex gap-2">
@@ -218,7 +326,8 @@ function SectionEditor({
                           </>
                         ) : (
                           <>
-                            <Upload className="w-4 h-4 mr-1" /> Upload Image
+                            <Upload className="w-4 h-4 mr-1" /> Upload{" "}
+                            {currentMediaType === "video" ? "Video" : "Image"}
                           </>
                         )}
                       </Button>
@@ -232,9 +341,22 @@ function SectionEditor({
                         <FolderOpen className="w-4 h-4 mr-1" /> Select from
                         Bucket
                       </Button>
+                      {(imageUrl || videoUrl) && onClearMedia && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={onClearMedia}
+                          disabled={uploading}
+                        >
+                          <X className="w-4 h-4 mr-1" /> Clear
+                        </Button>
+                      )}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Max 5MB. JPEG, PNG, or WebP.
+                      {currentMediaType === "video"
+                        ? "Max 50MB. MP4 or WebM."
+                        : "Max 5MB. JPEG, PNG, or WebP."}
                     </p>
                   </div>
                 </div>
@@ -245,17 +367,17 @@ function SectionEditor({
         )}
       </CardContent>
 
-      {/* Bucket Image Selection Dialog */}
+      {/* Bucket Media Selection Dialog */}
       <Dialog open={isBucketDialogOpen} onOpenChange={setIsBucketDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <FolderOpen className="w-5 h-5" />
-              Select Image from Bucket
+              Select from Bucket
             </DialogTitle>
             <DialogDescription>
-              Choose an existing image from the Supabase storage bucket for this
-              section.
+              Choose an existing {currentMediaType} from the Supabase storage
+              bucket for this section.
             </DialogDescription>
           </DialogHeader>
 
@@ -265,43 +387,80 @@ function SectionEditor({
                 <Skeleton key={i} className="aspect-square rounded-lg" />
               ))}
             </div>
-          ) : bucketImages.length === 0 ? (
+          ) : bucketMedia.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>No images found in this section's bucket.</p>
+              <p>No media found in this section's bucket.</p>
               <p className="text-sm mt-1">
-                Upload an image first to see it here.
+                Upload a file first to see it here.
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
-              {bucketImages.map((image) => (
-                <div
-                  key={image.name}
-                  className={`relative aspect-square rounded-lg overflow-hidden border-2 cursor-pointer transition-all hover:opacity-80 ${
-                    selectedBucketImage === image.url
-                      ? "border-primary ring-2 ring-primary/20"
-                      : "border-border"
-                  }`}
-                  onClick={() => setSelectedBucketImage(image.url)}
-                >
-                  <img
-                    src={image.url}
-                    alt={image.name}
-                    className="w-full h-full object-cover"
-                  />
-                  {selectedBucketImage === image.url && (
-                    <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                      <div className="bg-primary text-primary-foreground rounded-full p-1">
-                        <Check className="w-4 h-4" />
+              {bucketMedia
+                .filter((m) =>
+                  currentMediaType === "video"
+                    ? isVideo(m.contentType)
+                    : !isVideo(m.contentType),
+                )
+                .map((media) => (
+                  <div
+                    key={media.name}
+                    className={`relative aspect-square rounded-lg overflow-hidden border-2 cursor-pointer transition-all hover:opacity-80 ${
+                      selectedBucketMedia?.url === media.url
+                        ? "border-primary ring-2 ring-primary/20"
+                        : "border-border"
+                    }`}
+                    onClick={() => setSelectedBucketMedia(media)}
+                  >
+                    {isVideo(media.contentType) ? (
+                      <>
+                        <video
+                          src={media.url}
+                          className="w-full h-full object-cover"
+                          muted
+                          playsInline
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="bg-black/50 rounded-full p-2">
+                            <svg
+                              className="w-5 h-5 text-white"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <img
+                        src={media.url}
+                        alt={media.name}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                    {selectedBucketMedia?.url === media.url && (
+                      <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                        <div className="bg-primary text-primary-foreground rounded-full p-1">
+                          <Check className="w-4 h-4" />
+                        </div>
                       </div>
+                    )}
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 truncate flex items-center gap-1">
+                      {isVideo(media.contentType) && (
+                        <svg
+                          className="w-3 h-3"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      )}
+                      {media.name.split("/").pop()}
                     </div>
-                  )}
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 truncate">
-                    {image.name.split("/").pop()}
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           )}
 
@@ -310,13 +469,14 @@ function SectionEditor({
               variant="outline"
               onClick={() => {
                 setIsBucketDialogOpen(false);
-                setSelectedBucketImage(null);
+                setSelectedBucketMedia(null);
               }}
             >
               <X className="w-4 h-4 mr-1" /> Cancel
             </Button>
-            <Button onClick={handleSelectImage} disabled={!selectedBucketImage}>
-              <Check className="w-4 h-4 mr-1" /> Select Image
+            <Button onClick={handleSelectMedia} disabled={!selectedBucketMedia}>
+              <Check className="w-4 h-4 mr-1" /> Select{" "}
+              {currentMediaType === "video" ? "Video" : "Image"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -356,23 +516,27 @@ export default function Admin() {
     hero_cta_primary: "",
     hero_cta_secondary: "",
     hero_image_url: "",
+    hero_video_url: "",
     // Features Section
     features_heading: "",
     features_description: "",
     features_list: [""],
     features_image_url: "",
+    features_video_url: "",
     // Immersion Section
     immersion_heading: "",
     immersion_description: "",
     immersion_advantages_heading: "",
     immersion_quote: "",
     immersion_image_url: "",
+    immersion_video_url: "",
     // Investment Section
     investment_heading: "",
     investment_description: "",
     investment_features: [""],
     investment_cta: "",
     investment_image_url: "",
+    investment_video_url: "",
     // Pricing Section
     pricing_heading: "",
     pricing_subheading: "",
@@ -382,6 +546,14 @@ export default function Admin() {
 
   // Image upload state
   const [uploadingSection, setUploadingSection] = useState<string | null>(null);
+
+  // Media type state for sections (image or video)
+  const [mediaTypes, setMediaTypes] = useState<Record<string, MediaType>>({
+    hero: "image",
+    features: "image",
+    immersion: "image",
+    investment: "image",
+  });
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -427,11 +599,13 @@ export default function Admin() {
         hero_cta_primary: settings.hero_cta_primary || "",
         hero_cta_secondary: settings.hero_cta_secondary || "",
         hero_image_url: settings.hero_image_url || "",
+        hero_video_url: settings.hero_video_url || "",
         // Features Section
         features_heading: settings.features_heading || "",
         features_description: settings.features_description || "",
         features_list: settings.features_list || [""],
         features_image_url: settings.features_image_url || "",
+        features_video_url: settings.features_video_url || "",
         // Immersion Section
         immersion_heading: settings.immersion_heading || "",
         immersion_description: settings.immersion_description || "",
@@ -439,17 +613,39 @@ export default function Admin() {
           settings.immersion_advantages_heading || "",
         immersion_quote: settings.immersion_quote || "",
         immersion_image_url: settings.immersion_image_url || "",
+        immersion_video_url: settings.immersion_video_url || "",
         // Investment Section
         investment_heading: settings.investment_heading || "",
         investment_description: settings.investment_description || "",
         investment_features: settings.investment_features || [""],
         investment_cta: settings.investment_cta || "",
         investment_image_url: settings.investment_image_url || "",
+        investment_video_url: settings.investment_video_url || "",
         // Pricing Section
         pricing_heading: settings.pricing_heading || "",
         pricing_subheading: settings.pricing_subheading || "",
         // Footer
         footer_tagline: settings.footer_tagline || "",
+      });
+
+      // Sync mediaTypes with loaded settings - determine if video or image based on which URL is set
+      setMediaTypes({
+        hero:
+          settings.hero_video_url && !settings.hero_image_url
+            ? "video"
+            : "image",
+        features:
+          settings.features_video_url && !settings.features_image_url
+            ? "video"
+            : "image",
+        immersion:
+          settings.immersion_video_url && !settings.immersion_image_url
+            ? "video"
+            : "image",
+        investment:
+          settings.investment_video_url && !settings.investment_image_url
+            ? "video"
+            : "image",
       });
     }
   }, [settings]);
@@ -475,8 +671,9 @@ export default function Admin() {
     );
   };
 
-  const handleImageUpload = async (section: string, file: File) => {
+  const handleMediaUpload = async (section: string, file: File) => {
     setUploadingSection(section);
+    const isVideo = file.type.startsWith("video/");
     try {
       const formData = new FormData();
       formData.append("file", file);
@@ -495,15 +692,22 @@ export default function Admin() {
 
       const result = await response.json();
 
-      // Update the form with the new image URL
+      // Update the form with the appropriate media URL and type
       setSettingsForm((prev) => ({
         ...prev,
-        [`${section}_image_url`]: result.url,
+        [`${section}_image_url`]: isVideo ? "" : result.url,
+        [`${section}_video_url`]: isVideo ? result.url : "",
+      }));
+
+      // Update media type to match uploaded file
+      setMediaTypes((prev) => ({
+        ...prev,
+        [section]: isVideo ? "video" : "image",
       }));
 
       toast({
-        title: "Image uploaded successfully",
-        description: "The image has been uploaded to Supabase.",
+        title: `${isVideo ? "Video" : "Image"} uploaded successfully`,
+        description: `The ${isVideo ? "video" : "image"} has been uploaded to Supabase.`,
       });
     } catch (error) {
       toast({
@@ -516,15 +720,47 @@ export default function Admin() {
     }
   };
 
-  const handleSelectFromBucket = (section: string, url: string) => {
+  const handleSelectFromBucket = (
+    section: string,
+    url: string,
+    contentType: string,
+  ) => {
+    const isVideo = contentType.startsWith("video/");
     setSettingsForm((prev) => ({
       ...prev,
-      [`${section}_image_url`]: url,
+      [`${section}_image_url`]: isVideo ? "" : url,
+      [`${section}_video_url`]: isVideo ? url : "",
+    }));
+
+    // Update media type to match selected file
+    setMediaTypes((prev) => ({
+      ...prev,
+      [section]: isVideo ? "video" : "image",
     }));
 
     toast({
-      title: "Image selected",
-      description: "The image from bucket has been selected for this section.",
+      title: `${isVideo ? "Video" : "Image"} selected`,
+      description: `The ${isVideo ? "video" : "image"} from bucket has been selected for this section.`,
+    });
+  };
+
+  const handleMediaTypeChange = (section: string, type: MediaType) => {
+    setMediaTypes((prev) => ({
+      ...prev,
+      [section]: type,
+    }));
+  };
+
+  const handleClearMedia = (section: string) => {
+    setSettingsForm((prev) => ({
+      ...prev,
+      [`${section}_image_url`]: "",
+      [`${section}_video_url`]: "",
+    }));
+
+    toast({
+      title: "Media cleared",
+      description: "The media has been removed from this section.",
     });
   };
 
@@ -981,10 +1217,16 @@ export default function Admin() {
               icon={<Layout className="w-5 h-5" />}
               isLoading={isLoadingSettings}
               imageUrl={settingsForm.hero_image_url}
-              onImageUpload={(file) => handleImageUpload("hero", file)}
+              videoUrl={settingsForm.hero_video_url}
+              mediaType={mediaTypes.hero}
+              onMediaTypeChange={(type) => handleMediaTypeChange("hero", type)}
+              onMediaUpload={(file: File) => handleMediaUpload("hero", file)}
               uploading={uploadingSection === "hero"}
               section="hero"
-              onSelectFromBucket={(url) => handleSelectFromBucket("hero", url)}
+              onSelectFromBucket={(url: string, contentType: string) =>
+                handleSelectFromBucket("hero", url, contentType)
+              }
+              onClearMedia={() => handleClearMedia("hero")}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -1071,12 +1313,20 @@ export default function Admin() {
               icon={<Layout className="w-5 h-5" />}
               isLoading={isLoadingSettings}
               imageUrl={settingsForm.features_image_url}
-              onImageUpload={(file) => handleImageUpload("features", file)}
+              videoUrl={settingsForm.features_video_url}
+              mediaType={mediaTypes.features}
+              onMediaTypeChange={(type) =>
+                handleMediaTypeChange("features", type)
+              }
+              onMediaUpload={(file: File) =>
+                handleMediaUpload("features", file)
+              }
               uploading={uploadingSection === "features"}
               section="features"
-              onSelectFromBucket={(url) =>
-                handleSelectFromBucket("features", url)
+              onSelectFromBucket={(url: string, contentType: string) =>
+                handleSelectFromBucket("features", url, contentType)
               }
+              onClearMedia={() => handleClearMedia("features")}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
@@ -1171,12 +1421,20 @@ export default function Admin() {
               icon={<Layout className="w-5 h-5" />}
               isLoading={isLoadingSettings}
               imageUrl={settingsForm.immersion_image_url}
-              onImageUpload={(file) => handleImageUpload("immersion", file)}
+              videoUrl={settingsForm.immersion_video_url}
+              mediaType={mediaTypes.immersion}
+              onMediaTypeChange={(type) =>
+                handleMediaTypeChange("immersion", type)
+              }
+              onMediaUpload={(file: File) =>
+                handleMediaUpload("immersion", file)
+              }
               uploading={uploadingSection === "immersion"}
               section="immersion"
-              onSelectFromBucket={(url) =>
-                handleSelectFromBucket("immersion", url)
+              onSelectFromBucket={(url: string, contentType: string) =>
+                handleSelectFromBucket("immersion", url, contentType)
               }
+              onClearMedia={() => handleClearMedia("immersion")}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
@@ -1249,12 +1507,20 @@ export default function Admin() {
               icon={<Layout className="w-5 h-5" />}
               isLoading={isLoadingSettings}
               imageUrl={settingsForm.investment_image_url}
-              onImageUpload={(file) => handleImageUpload("investment", file)}
+              videoUrl={settingsForm.investment_video_url}
+              mediaType={mediaTypes.investment}
+              onMediaTypeChange={(type) =>
+                handleMediaTypeChange("investment", type)
+              }
+              onMediaUpload={(file: File) =>
+                handleMediaUpload("investment", file)
+              }
               uploading={uploadingSection === "investment"}
               section="investment"
-              onSelectFromBucket={(url) =>
-                handleSelectFromBucket("investment", url)
+              onSelectFromBucket={(url: string, contentType: string) =>
+                handleSelectFromBucket("investment", url, contentType)
               }
+              onClearMedia={() => handleClearMedia("investment")}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">

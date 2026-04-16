@@ -1,13 +1,24 @@
 import { siteSettingsSchema } from "../schemas";
-import { ensureSettingsSchema, getAllSettings, updateMultipleSettings } from "../db";
+import {
+  ensureSettingsSchema,
+  getAllSettings,
+  updateMultipleSettings,
+} from "../db";
 import { errorResponse, jsonResponse } from "../utils";
 
 export async function onRequest(context: any) {
-  await ensureSettingsSchema(context.env);
   const { request } = context;
+  console.log("[API /settings] Request received:", request.method);
+  await ensureSettingsSchema(context.env);
 
   if (request.method === "GET") {
+    console.log("[API /settings] Fetching settings...");
     const settings = await getAllSettings(context.env);
+    console.log(
+      "[API /settings] Returning settings with",
+      Object.keys(settings).length,
+      "keys",
+    );
     return jsonResponse(settings);
   }
 

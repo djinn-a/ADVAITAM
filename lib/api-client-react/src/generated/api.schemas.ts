@@ -90,6 +90,8 @@ export interface SiteSettings {
   hero_cta_secondary?: string;
   /** Hero background image URL from Supabase */
   hero_image_url?: string;
+  /** Hero background video URL from Supabase (MP4/WebM) */
+  hero_video_url?: string;
   /** Features section heading */
   features_heading?: string;
   /** Features section description */
@@ -98,6 +100,8 @@ export interface SiteSettings {
   features_list?: string[];
   /** Features section image URL from Supabase */
   features_image_url?: string;
+  /** Features section video URL from Supabase (MP4/WebM) */
+  features_video_url?: string;
   /** Immersion section heading */
   immersion_heading?: string;
   /** Immersion section description */
@@ -108,6 +112,8 @@ export interface SiteSettings {
   immersion_quote?: string;
   /** Immersion section image URL from Supabase */
   immersion_image_url?: string;
+  /** Immersion section video URL from Supabase (MP4/WebM) */
+  immersion_video_url?: string;
   /** Investment section heading */
   investment_heading?: string;
   /** Investment section description */
@@ -118,6 +124,8 @@ export interface SiteSettings {
   investment_cta?: string;
   /** Investment section image URL from Supabase */
   investment_image_url?: string;
+  /** Investment section video URL from Supabase (MP4/WebM) */
+  investment_video_url?: string;
   /** Pricing section heading */
   pricing_heading?: string;
   /** Pricing section subheading */
@@ -155,6 +163,8 @@ export interface UpdateSiteSettingsBody {
   hero_cta_secondary?: string;
   /** Hero background image URL from Supabase */
   hero_image_url?: string;
+  /** Hero background video URL from Supabase (MP4/WebM) */
+  hero_video_url?: string;
   /** Features section heading */
   features_heading?: string;
   /** Features section description */
@@ -163,6 +173,8 @@ export interface UpdateSiteSettingsBody {
   features_list?: string[];
   /** Features section image URL from Supabase */
   features_image_url?: string;
+  /** Features section video URL from Supabase (MP4/WebM) */
+  features_video_url?: string;
   /** Immersion section heading */
   immersion_heading?: string;
   /** Immersion section description */
@@ -173,6 +185,8 @@ export interface UpdateSiteSettingsBody {
   immersion_quote?: string;
   /** Immersion section image URL from Supabase */
   immersion_image_url?: string;
+  /** Immersion section video URL from Supabase (MP4/WebM) */
+  immersion_video_url?: string;
   /** Investment section heading */
   investment_heading?: string;
   /** Investment section description */
@@ -183,6 +197,8 @@ export interface UpdateSiteSettingsBody {
   investment_cta?: string;
   /** Investment section image URL from Supabase */
   investment_image_url?: string;
+  /** Investment section video URL from Supabase (MP4/WebM) */
+  investment_video_url?: string;
   /** Pricing section heading */
   pricing_heading?: string;
   /** Pricing section subheading */

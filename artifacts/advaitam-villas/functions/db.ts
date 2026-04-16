@@ -256,8 +256,22 @@ const DEFAULT_SETTINGS: Record<string, string> = {
 };
 
 export async function getAllSettings(env: any): Promise<Record<string, any>> {
+  console.log("[DB] Fetching all settings from D1...");
   const result = await env.D1.prepare("SELECT * FROM site_settings").all();
+  console.log(
+    "[DB] Raw D1 result:",
+    JSON.stringify(result.results?.slice(0, 5)),
+    "total rows:",
+    result.results?.length,
+  );
+
   const settings: Record<string, any> = { ...DEFAULT_SETTINGS };
+  console.log(
+    "[DB] Starting with DEFAULT_SETTINGS keys:",
+    Object.keys(settings).slice(0, 5),
+    "...",
+  );
+
   for (const row of result.results ?? []) {
     // Try to parse JSON for array/object values
     try {
@@ -267,6 +281,12 @@ export async function getAllSettings(env: any): Promise<Record<string, any>> {
       settings[row.key] = row.value;
     }
   }
+
+  console.log(
+    "[DB] Returning merged settings with keys:",
+    Object.keys(settings).slice(0, 10),
+    "...",
+  );
   return settings;
 }
 

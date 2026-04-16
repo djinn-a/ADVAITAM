@@ -73,10 +73,16 @@ export async function onRequest(context: any) {
     }
 
     // Filter to only include files (not folders) and map to useful format
-    const images = items
+    // Include both images and videos
+    const media = items
       .filter((item: any) => {
         // Files have metadata with size, folders don't
-        return item && item.metadata && typeof item.metadata.size === "number";
+        // Include images and videos based on mimetype
+        if (!item || !item.metadata || typeof item.metadata.size !== "number") {
+          return false;
+        }
+        const mimetype = item.metadata.mimetype || "";
+        return mimetype.startsWith("image/") || mimetype.startsWith("video/");
       })
       .map((file: any) => {
         // Supabase list may return just the filename without the section prefix
@@ -100,9 +106,9 @@ export async function onRequest(context: any) {
       );
 
     return jsonResponse({
-      images,
+      images: media, // Keep as 'images' for backward compatibility
       section,
-      count: images.length,
+      count: media.length,
     });
   } catch (error) {
     console.error("List images error:", error);
