@@ -255,6 +255,13 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   footer_tagline: "Luxury Forest Villas in Jim Corbett.",
 };
 
+function isEmptyValue(value: unknown): boolean {
+  if (value === null || value === undefined) return true;
+  if (typeof value === "string" && value.trim() === "") return true;
+  if (Array.isArray(value) && value.length === 0) return true;
+  return false;
+}
+
 export async function getAllSettings(env: any): Promise<Record<string, any>> {
   console.log("[DB] Fetching all settings from D1...");
   const result = await env.D1.prepare("SELECT * FROM site_settings").all();
@@ -274,11 +281,16 @@ export async function getAllSettings(env: any): Promise<Record<string, any>> {
 
   for (const row of result.results ?? []) {
     // Try to parse JSON for array/object values
+    let parsedValue: unknown;
     try {
-      const parsed = JSON.parse(row.value);
-      settings[row.key] = parsed;
+      parsedValue = JSON.parse(row.value);
     } catch {
-      settings[row.key] = row.value;
+      parsedValue = row.value;
+    }
+
+    // Only override default if the DB value is not empty
+    if (!isEmptyValue(parsedValue)) {
+      settings[row.key] = parsedValue;
     }
   }
 
@@ -288,6 +300,44 @@ export async function getAllSettings(env: any): Promise<Record<string, any>> {
     "...",
   );
   return settings;
+}
+
+export async function ensureDefaultSettings(env: any): Promise<void> {
+  console.log("[DB] Ensuring default settings exist...");
+  const existingResult = await env.D1.prepare(
+    "SELECT key, value FROM site_settings",
+  ).all();
+
+  const existingKeys = new Set(
+    (existingResult.results ?? []).map((row: any) => row.key),
+  );
+
+  const keysToInsert: Array<{ key: string; value: string }> = [];
+
+  for (const [key, defaultValue] of Object.entries(DEFAULT_SETTINGS)) {
+    if (!existingKeys.has(key)) {
+      keysToInsert.push({ key, value: defaultValue });
+    }
+  }
+
+  if (keysToInsert.length === 0) {
+    console.log("[DB] All default settings already exist in database");
+    return;
+  }
+
+  console.log(
+    `[DB] Inserting ${keysToInsert.length} missing default settings...`,
+  );
+
+  for (const { key, value } of keysToInsert) {
+    await env.D1.prepare(
+      "INSERT INTO site_settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP)",
+    )
+      .bind(key, value)
+      .run();
+  }
+
+  console.log(`[DB] Inserted ${keysToInsert.length} default settings`);
 }
 
 export async function updateSetting(

@@ -1,6 +1,7 @@
 import { siteSettingsSchema } from "../schemas";
 import {
   ensureSettingsSchema,
+  ensureDefaultSettings,
   getAllSettings,
   updateMultipleSettings,
 } from "../db";
@@ -13,6 +14,8 @@ export async function onRequest(context: any) {
 
   if (request.method === "GET") {
     console.log("[API /settings] Fetching settings...");
+    // Ensure default settings exist in database (idempotent)
+    await ensureDefaultSettings(context.env);
     const settings = await getAllSettings(context.env);
     console.log(
       "[API /settings] Returning settings with",
