@@ -61,6 +61,11 @@ import {
   Phone,
   Mail,
   MessageSquare,
+  ImageIcon,
+  Upload,
+  Plus,
+  Layout,
+  Type,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -75,6 +80,111 @@ import {
   useUpdateSiteSettings,
   getGetSiteSettingsQueryKey,
 } from "@workspace/api-client-react";
+
+// Section Editor Component
+interface SectionEditorProps {
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  isLoading: boolean;
+  imageUrl?: string;
+  onImageUpload?: (file: File) => void;
+  uploading?: boolean;
+}
+
+function SectionEditor({
+  title,
+  icon,
+  children,
+  isLoading,
+  imageUrl,
+  onImageUpload,
+  uploading,
+}: SectionEditorProps) {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && onImageUpload) {
+      onImageUpload(file);
+    }
+  };
+
+  return (
+    <Card className="bg-card border-border">
+      <CardHeader>
+        <CardTitle className="text-lg font-serif flex items-center gap-2">
+          {icon}
+          {title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {isLoading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        ) : (
+          <>
+            {onImageUpload && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4" /> Section Image
+                </label>
+                <div className="flex items-center gap-4">
+                  {imageUrl ? (
+                    <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border">
+                      <img
+                        src={imageUrl}
+                        alt={title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-32 h-32 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-secondary/30">
+                      <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                    >
+                      {uploading ? (
+                        <>
+                          <Upload className="w-4 h-4 mr-1 animate-pulse" />{" "}
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4 mr-1" /> Upload Image
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-xs text-muted-foreground">
+                      Max 5MB. JPEG, PNG, or WebP.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            {children}
+          </>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("leads");
@@ -100,7 +210,39 @@ export default function Admin() {
     base_price: "",
     location_advantages: [""],
     pdf_google_drive_link: "",
+    // Hero Section
+    hero_badge_text: "",
+    hero_heading: "",
+    hero_subheading: "",
+    hero_cta_primary: "",
+    hero_cta_secondary: "",
+    hero_image_url: "",
+    // Features Section
+    features_heading: "",
+    features_description: "",
+    features_list: [""],
+    features_image_url: "",
+    // Immersion Section
+    immersion_heading: "",
+    immersion_description: "",
+    immersion_advantages_heading: "",
+    immersion_quote: "",
+    immersion_image_url: "",
+    // Investment Section
+    investment_heading: "",
+    investment_description: "",
+    investment_features: [""],
+    investment_cta: "",
+    investment_image_url: "",
+    // Pricing Section
+    pricing_heading: "",
+    pricing_subheading: "",
+    // Footer
+    footer_tagline: "",
   });
+
+  // Image upload state
+  const [uploadingSection, setUploadingSection] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -139,6 +281,36 @@ export default function Admin() {
         base_price: settings.base_price || "",
         location_advantages: settings.location_advantages || [""],
         pdf_google_drive_link: settings.pdf_google_drive_link || "",
+        // Hero Section
+        hero_badge_text: settings.hero_badge_text || "",
+        hero_heading: settings.hero_heading || "",
+        hero_subheading: settings.hero_subheading || "",
+        hero_cta_primary: settings.hero_cta_primary || "",
+        hero_cta_secondary: settings.hero_cta_secondary || "",
+        hero_image_url: settings.hero_image_url || "",
+        // Features Section
+        features_heading: settings.features_heading || "",
+        features_description: settings.features_description || "",
+        features_list: settings.features_list || [""],
+        features_image_url: settings.features_image_url || "",
+        // Immersion Section
+        immersion_heading: settings.immersion_heading || "",
+        immersion_description: settings.immersion_description || "",
+        immersion_advantages_heading:
+          settings.immersion_advantages_heading || "",
+        immersion_quote: settings.immersion_quote || "",
+        immersion_image_url: settings.immersion_image_url || "",
+        // Investment Section
+        investment_heading: settings.investment_heading || "",
+        investment_description: settings.investment_description || "",
+        investment_features: settings.investment_features || [""],
+        investment_cta: settings.investment_cta || "",
+        investment_image_url: settings.investment_image_url || "",
+        // Pricing Section
+        pricing_heading: settings.pricing_heading || "",
+        pricing_subheading: settings.pricing_subheading || "",
+        // Footer
+        footer_tagline: settings.footer_tagline || "",
       });
     }
   }, [settings]);
@@ -153,7 +325,7 @@ export default function Admin() {
             queryKey: getGetSiteSettingsQueryKey(),
           });
         },
-        onError: (error) => {
+        onError: (error: { message: string }) => {
           toast({
             title: "Failed to save settings",
             description: error.message,
@@ -162,6 +334,47 @@ export default function Admin() {
         },
       },
     );
+  };
+
+  const handleImageUpload = async (section: string, file: File) => {
+    setUploadingSection(section);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("section", section);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Upload failed");
+      }
+
+      const result = await response.json();
+
+      // Update the form with the new image URL
+      setSettingsForm((prev) => ({
+        ...prev,
+        [`${section}_image_url`]: result.url,
+      }));
+
+      toast({
+        title: "Image uploaded successfully",
+        description: "The image has been uploaded to Supabase.",
+      });
+    } catch (error) {
+      toast({
+        title: "Upload failed",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingSection(null);
+    }
   };
 
   const filteredLeads = useMemo(() => {
@@ -341,6 +554,7 @@ export default function Admin() {
         >
           <TabsList className="bg-card border border-border">
             <TabsTrigger value="leads">Lead Pipeline</TabsTrigger>
+            <TabsTrigger value="sections">Sections</TabsTrigger>
             <TabsTrigger value="settings">Site Settings</TabsTrigger>
           </TabsList>
 
@@ -607,6 +821,458 @@ export default function Admin() {
                   </TableBody>
                 </Table>
               </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="sections" className="space-y-6">
+            <SectionEditor
+              title="Hero Section"
+              icon={<Layout className="w-5 h-5" />}
+              isLoading={isLoadingSettings}
+              imageUrl={settingsForm.hero_image_url}
+              onImageUpload={(file) => handleImageUpload("hero", file)}
+              uploading={uploadingSection === "hero"}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Badge Text
+                  </label>
+                  <Input
+                    value={settingsForm.hero_badge_text}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        hero_badge_text: e.target.value,
+                      })
+                    }
+                    placeholder="Limited Inventory • High ROI Potential"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Main Heading
+                  </label>
+                  <Textarea
+                    value={settingsForm.hero_heading}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        hero_heading: e.target.value,
+                      })
+                    }
+                    placeholder="Own a Private Forest Villa in Jim Corbett"
+                    className="bg-background min-h-[60px]"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Subheading
+                  </label>
+                  <Textarea
+                    value={settingsForm.hero_subheading}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        hero_subheading: e.target.value,
+                      })
+                    }
+                    placeholder="Only 17 Ultra-Luxury Villas..."
+                    className="bg-background min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Primary CTA</label>
+                  <Input
+                    value={settingsForm.hero_cta_primary}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        hero_cta_primary: e.target.value,
+                      })
+                    }
+                    placeholder="Get Brochure"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Secondary CTA</label>
+                  <Input
+                    value={settingsForm.hero_cta_secondary}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        hero_cta_secondary: e.target.value,
+                      })
+                    }
+                    placeholder="Book Site Visit"
+                    className="bg-background"
+                  />
+                </div>
+              </div>
+            </SectionEditor>
+
+            <SectionEditor
+              title="Features Section"
+              icon={<Layout className="w-5 h-5" />}
+              isLoading={isLoadingSettings}
+              imageUrl={settingsForm.features_image_url}
+              onImageUpload={(file) => handleImageUpload("features", file)}
+              uploading={uploadingSection === "features"}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Heading
+                  </label>
+                  <Input
+                    value={settingsForm.features_heading}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        features_heading: e.target.value,
+                      })
+                    }
+                    placeholder="The Definition of Exclusive"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Description
+                  </label>
+                  <Textarea
+                    value={settingsForm.features_description}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        features_description: e.target.value,
+                      })
+                    }
+                    placeholder="Advaitam is not a resort..."
+                    className="bg-background min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium">Feature List</label>
+                  {settingsForm.features_list.map((item, index) => (
+                    <div key={index} className="flex gap-2">
+                      <Input
+                        value={item}
+                        onChange={(e) => {
+                          const newList = [...settingsForm.features_list];
+                          newList[index] = e.target.value;
+                          setSettingsForm({
+                            ...settingsForm,
+                            features_list: newList,
+                          });
+                        }}
+                        placeholder={`Feature ${index + 1}`}
+                        className="bg-background"
+                      />
+                      {settingsForm.features_list.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => {
+                            const newList = settingsForm.features_list.filter(
+                              (_, i) => i !== index,
+                            );
+                            setSettingsForm({
+                              ...settingsForm,
+                              features_list:
+                                newList.length > 0 ? newList : [""],
+                            });
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        features_list: [...settingsForm.features_list, ""],
+                      })
+                    }
+                  >
+                    <Plus className="w-4 h-4 mr-1" /> Add Feature
+                  </Button>
+                </div>
+              </div>
+            </SectionEditor>
+
+            <SectionEditor
+              title="Immersion Section"
+              icon={<Layout className="w-5 h-5" />}
+              isLoading={isLoadingSettings}
+              imageUrl={settingsForm.immersion_image_url}
+              onImageUpload={(file) => handleImageUpload("immersion", file)}
+              uploading={uploadingSection === "immersion"}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Heading
+                  </label>
+                  <Input
+                    value={settingsForm.immersion_heading}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        immersion_heading: e.target.value,
+                      })
+                    }
+                    placeholder="Where the Forest Meets the Firelight"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Description
+                  </label>
+                  <Textarea
+                    value={settingsForm.immersion_description}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        immersion_description: e.target.value,
+                      })
+                    }
+                    placeholder="Floor-to-ceiling glass erases the boundary..."
+                    className="bg-background min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Advantages Heading
+                  </label>
+                  <Input
+                    value={settingsForm.immersion_advantages_heading}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        immersion_advantages_heading: e.target.value,
+                      })
+                    }
+                    placeholder="Location Advantages"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Quote Text</label>
+                  <Input
+                    value={settingsForm.immersion_quote}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        immersion_quote: e.target.value,
+                      })
+                    }
+                    placeholder='"Close enough for convenience..."'
+                    className="bg-background"
+                  />
+                </div>
+              </div>
+            </SectionEditor>
+
+            <SectionEditor
+              title="Investment Section"
+              icon={<Layout className="w-5 h-5" />}
+              isLoading={isLoadingSettings}
+              imageUrl={settingsForm.investment_image_url}
+              onImageUpload={(file) => handleImageUpload("investment", file)}
+              uploading={uploadingSection === "investment"}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Heading
+                  </label>
+                  <Input
+                    value={settingsForm.investment_heading}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        investment_heading: e.target.value,
+                      })
+                    }
+                    placeholder="A Legacy Investment"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Description
+                  </label>
+                  <Textarea
+                    value={settingsForm.investment_description}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        investment_description: e.target.value,
+                      })
+                    }
+                    placeholder="Beyond a weekend escape..."
+                    className="bg-background min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium">
+                    Investment Features
+                  </label>
+                  {settingsForm.investment_features.map((item, index) => (
+                    <div key={index} className="flex gap-2">
+                      <Input
+                        value={item}
+                        onChange={(e) => {
+                          const newList = [...settingsForm.investment_features];
+                          newList[index] = e.target.value;
+                          setSettingsForm({
+                            ...settingsForm,
+                            investment_features: newList,
+                          });
+                        }}
+                        placeholder={`Feature ${index + 1}`}
+                        className="bg-background"
+                      />
+                      {settingsForm.investment_features.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => {
+                            const newList =
+                              settingsForm.investment_features.filter(
+                                (_, i) => i !== index,
+                              );
+                            setSettingsForm({
+                              ...settingsForm,
+                              investment_features:
+                                newList.length > 0 ? newList : [""],
+                            });
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        investment_features: [
+                          ...settingsForm.investment_features,
+                          "",
+                        ],
+                      })
+                    }
+                  >
+                    <Plus className="w-4 h-4 mr-1" /> Add Feature
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">CTA Text</label>
+                  <Input
+                    value={settingsForm.investment_cta}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        investment_cta: e.target.value,
+                      })
+                    }
+                    placeholder="Get Rental Income Projection"
+                    className="bg-background"
+                  />
+                </div>
+              </div>
+            </SectionEditor>
+
+            <SectionEditor
+              title="Pricing Section"
+              icon={<Layout className="w-5 h-5" />}
+              isLoading={isLoadingSettings}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Heading
+                  </label>
+                  <Input
+                    value={settingsForm.pricing_heading}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        pricing_heading: e.target.value,
+                      })
+                    }
+                    placeholder="Claim Your Sanctuary"
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Subheading
+                  </label>
+                  <Input
+                    value={settingsForm.pricing_subheading}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        pricing_subheading: e.target.value,
+                      })
+                    }
+                    placeholder="Only 17 Villas. Once Sold, Gone Forever."
+                    className="bg-background"
+                  />
+                </div>
+              </div>
+            </SectionEditor>
+
+            <SectionEditor
+              title="Footer"
+              icon={<Layout className="w-5 h-5" />}
+              isLoading={isLoadingSettings}
+            >
+              <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Tagline
+                  </label>
+                  <Input
+                    value={settingsForm.footer_tagline}
+                    onChange={(e) =>
+                      setSettingsForm({
+                        ...settingsForm,
+                        footer_tagline: e.target.value,
+                      })
+                    }
+                    placeholder="Luxury Forest Villas in Jim Corbett."
+                    className="bg-background"
+                  />
+                </div>
+              </div>
+            </SectionEditor>
+
+            <div className="flex justify-end pt-4">
+              <Button
+                onClick={handleSettingsSave}
+                disabled={updateSettings.isPending}
+                size="lg"
+              >
+                {updateSettings.isPending ? "Saving..." : "Save All Changes"}
+              </Button>
             </div>
           </TabsContent>
 

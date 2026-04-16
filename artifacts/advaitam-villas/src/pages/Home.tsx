@@ -67,6 +67,73 @@ export default function Home() {
     parseInt(discountPricing || "15", 10) / 100
   ).toFixed(2);
 
+  // Section content with fallbacks
+  // Hero Section
+  const heroBadgeText =
+    settings?.hero_badge_text || "Limited Inventory • High ROI Potential";
+  const heroHeading =
+    settings?.hero_heading || "Own a Private Forest Villa in Jim Corbett";
+  const heroSubheading =
+    settings?.hero_subheading ||
+    "Only 17 Ultra-Luxury Villas with Private Pool, Rooftop Garden & Airbnb Income Potential — Just 5 Hours from Delhi NCR.";
+  const heroCtaPrimary = settings?.hero_cta_primary || "Get Brochure";
+  const heroCtaSecondary = settings?.hero_cta_secondary || "Book Site Visit";
+  const heroImageUrl = settings?.hero_image_url || "/hero-bg.png";
+
+  // Features Section
+  const featuresHeading =
+    settings?.features_heading || "The Definition of Exclusive";
+  const featuresDescription =
+    settings?.features_description ||
+    "Advaitam is not a resort. It is a private sanctuary. Designed for those who seek the silence of the deep woods without compromising on uncompromising luxury.";
+  const featuresList = settings?.features_list || [
+    "Private Swimming Pool in Every Villa",
+    "Rooftop Garden Terrace",
+    "2070 Sq. Ft. Built-Up Area",
+    "Premium Finishes & Modular Kitchen",
+  ];
+  const featuresImageUrl =
+    settings?.features_image_url || "/villa-exterior.png";
+
+  // Immersion Section
+  const immersionHeading =
+    settings?.immersion_heading || "Where the Forest Meets the Firelight";
+  const immersionDescription =
+    settings?.immersion_description ||
+    "Floor-to-ceiling glass erases the boundary between your living room and the ancient woods. Every material—from rich timber to raw stone—has been chosen to ground you in nature while enveloping you in warmth.";
+  const immersionAdvantagesHeading =
+    settings?.immersion_advantages_heading || "Location Advantages";
+  const immersionQuote =
+    settings?.immersion_quote ||
+    '"Close enough for convenience. Far enough for peace."';
+  const immersionImageUrl =
+    settings?.immersion_image_url || "/villa-interior.png";
+
+  // Investment Section
+  const investmentHeading =
+    settings?.investment_heading || "A Legacy Investment";
+  const investmentDescription =
+    settings?.investment_description ||
+    "Beyond a weekend escape, Advaitam is a high-yield asset. With professional property management, your villa works for you when you're not there.";
+  const investmentFeatures = settings?.investment_features || [
+    "10–15% Expected Appreciation",
+    "High Demand for Luxury Airbnb Stays",
+    "Hassle-Free Professional Management",
+  ];
+  const investmentCta =
+    settings?.investment_cta || "Get Rental Income Projection";
+  const investmentImageUrl =
+    settings?.investment_image_url || "/rooftop-terrace.png";
+
+  // Pricing Section
+  const pricingHeading = settings?.pricing_heading || "Claim Your Sanctuary";
+  const pricingSubheading =
+    settings?.pricing_subheading || "Only 17 Villas. Once Sold, Gone Forever.";
+
+  // Footer
+  const footerTagline =
+    settings?.footer_tagline || "Luxury Forest Villas in Jim Corbett.";
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 100);
@@ -232,7 +299,7 @@ export default function Home() {
         >
           <div className="hero-bg-animate absolute inset-0 z-0">
             <img
-              src="/hero-bg.png"
+              src={heroImageUrl}
               alt="Aerial view of luxury forest villa with private swimming pool surrounded by lush green trees in Jim Corbett"
               className="w-full h-full object-cover"
               loading="eager"
@@ -247,20 +314,20 @@ export default function Home() {
             <div className="max-w-3xl space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-background/50 backdrop-blur-sm text-primary text-sm font-medium tracking-wide uppercase">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                Limited Inventory • High ROI Potential
+                {heroBadgeText}
               </div>
 
               <h1
                 id="hero-title"
                 className="text-5xl md:text-7xl font-serif font-bold leading-tight"
               >
-                Own a Private Forest Villa in{" "}
+                {heroHeading.split("Jim Corbett")[0]}
                 <span className="text-gradient">Jim Corbett</span>
+                {heroHeading.split("Jim Corbett")[1] || ""}
               </h1>
 
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl leading-relaxed">
-                Only 17 Ultra-Luxury Villas with Private Pool, Rooftop Garden &
-                Airbnb Income Potential — Just 5 Hours from Delhi NCR.
+                {heroSubheading}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -269,7 +336,7 @@ export default function Home() {
                   onClick={scrollToContact}
                   className="text-lg h-14 px-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(217,119,6,0.3)]"
                 >
-                  Get Brochure <Download className="ml-2 w-5 h-5" />
+                  {heroCtaPrimary} <Download className="ml-2 w-5 h-5" />
                 </Button>
                 <Button
                   size="lg"
@@ -277,7 +344,7 @@ export default function Home() {
                   onClick={scrollToContact}
                   className="text-lg h-14 px-8 border-primary/30 hover:bg-primary/10"
                 >
-                  Book Site Visit <ArrowRight className="ml-2 w-5 h-5" />
+                  {heroCtaSecondary} <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </div>
 
@@ -304,22 +371,22 @@ export default function Home() {
                 className="space-y-8"
               >
                 <h2 className="text-4xl font-serif font-bold">
-                  The Definition of{" "}
-                  <span className="text-primary italic">Exclusive</span>
+                  {featuresHeading.includes("Exclusive") ? (
+                    <>
+                      {featuresHeading.split("Exclusive")[0]}
+                      <span className="text-primary italic">Exclusive</span>
+                      {featuresHeading.split("Exclusive")[1] || ""}
+                    </>
+                  ) : (
+                    featuresHeading
+                  )}
                 </h2>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  Advaitam is not a resort. It is a private sanctuary. Designed
-                  for those who seek the silence of the deep woods without
-                  compromising on uncompromising luxury.
+                  {featuresDescription}
                 </p>
 
                 <AnimatedFeatureList
-                  items={[
-                    "Private Swimming Pool in Every Villa",
-                    "Rooftop Garden Terrace",
-                    "2070 Sq. Ft. Built-Up Area",
-                    "Premium Finishes & Modular Kitchen",
-                  ]}
+                  items={featuresList}
                   className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6"
                   staggerDelay={0.08}
                 />
@@ -332,7 +399,7 @@ export default function Home() {
               >
                 <div className="aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden relative shadow-2xl">
                   <img
-                    src="/villa-exterior.png"
+                    src={featuresImageUrl}
                     alt="Luxury villa exterior with private swimming pool and landscaped gardens at sunset"
                     className="w-full h-full object-cover"
                     loading="lazy"
@@ -380,7 +447,7 @@ export default function Home() {
                 className="order-2 lg:order-1 relative h-[600px] rounded-2xl overflow-hidden"
               >
                 <img
-                  src="/villa-interior.png"
+                  src={immersionImageUrl}
                   alt="Spacious villa interior with floor-to-ceiling windows overlooking forest and mountains"
                   className="w-full h-full object-cover"
                   loading="lazy"
@@ -396,14 +463,10 @@ export default function Home() {
                 className="order-1 lg:order-2 space-y-8"
               >
                 <h2 className="text-4xl md:text-5xl font-serif font-bold">
-                  Where the Forest <br />
-                  Meets the Firelight
+                  {immersionHeading}
                 </h2>
                 <p className="text-xl text-muted-foreground">
-                  Floor-to-ceiling glass erases the boundary between your living
-                  room and the ancient woods. Every material—from rich timber to
-                  raw stone—has been chosen to ground you in nature while
-                  enveloping you in warmth.
+                  {immersionDescription}
                 </p>
 
                 <AnimatedSection
@@ -412,7 +475,7 @@ export default function Home() {
                   className="p-6 bg-secondary/50 rounded-xl border border-border/50 backdrop-blur-sm"
                 >
                   <h3 className="font-serif text-2xl mb-4 text-primary">
-                    Location Advantages
+                    {immersionAdvantagesHeading}
                   </h3>
                   <AnimatedFeatureList
                     items={
@@ -425,7 +488,7 @@ export default function Home() {
                     staggerDelay={0.1}
                   />
                   <p className="mt-6 text-sm font-medium italic text-muted-foreground">
-                    "Close enough for convenience. Far enough for peace."
+                    {immersionQuote}
                   </p>
                 </AnimatedSection>
               </AnimatedSection>
@@ -446,19 +509,13 @@ export default function Home() {
                 className="flex-1 space-y-6"
               >
                 <h2 className="text-4xl font-serif font-bold">
-                  A Legacy Investment
+                  {investmentHeading}
                 </h2>
                 <p className="text-lg text-muted-foreground">
-                  Beyond a weekend escape, Advaitam is a high-yield asset. With
-                  professional property management, your villa works for you
-                  when you're not there.
+                  {investmentDescription}
                 </p>
                 <AnimatedFeatureList
-                  items={[
-                    "10–15% Expected Appreciation",
-                    "High Demand for Luxury Airbnb Stays",
-                    "Hassle-Free Professional Management",
-                  ]}
+                  items={investmentFeatures}
                   staggerDelay={0.08}
                 />
                 <Button
@@ -466,13 +523,13 @@ export default function Home() {
                   variant="outline"
                   className="mt-4 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                 >
-                  Get Rental Income Projection
+                  {investmentCta}
                 </Button>
               </AnimatedSection>
 
               <AnimatedSection direction="left" delay={0.2} className="flex-1">
                 <img
-                  src="/rooftop-terrace.png"
+                  src={investmentImageUrl}
                   alt="Rooftop terrace garden with panoramic views of Jim Corbett forest and mountains"
                   className="w-full h-auto rounded-2xl shadow-xl"
                   loading="lazy"
@@ -500,11 +557,9 @@ export default function Home() {
               >
                 <div>
                   <h2 className="text-3xl font-serif font-bold mb-2">
-                    Claim Your Sanctuary
+                    {pricingHeading}
                   </h2>
-                  <p className="text-muted-foreground">
-                    Only 17 Villas. Once Sold, Gone Forever.
-                  </p>
+                  <p className="text-muted-foreground">{pricingSubheading}</p>
                 </div>
 
                 <div className="space-y-4 bg-secondary/50 p-6 rounded-xl">
@@ -639,7 +694,7 @@ export default function Home() {
               <Trees className="w-6 h-6 text-primary" />
               <span className="font-serif text-xl font-bold">ADVAITAM</span>
             </div>
-            <p className="mb-4">Luxury Forest Villas in Jim Corbett.</p>
+            <p className="mb-4">{footerTagline}</p>
             <p className="text-sm opacity-50">
               © {new Date().getFullYear()} Advaitam Villas. All rights reserved.
             </p>

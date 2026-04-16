@@ -323,6 +323,85 @@ components:
         pdf_google_drive_link:
           type: string
           description: "Google Drive link to PDF brochure"
+        # Hero Section
+        hero_badge_text:
+          type: string
+          description: "Hero badge text (e.g., 'Limited Inventory • High ROI Potential')"
+        hero_heading:
+          type: string
+          description: "Hero main heading"
+        hero_subheading:
+          type: string
+          description: "Hero subheading/description"
+        hero_cta_primary:
+          type: string
+          description: "Primary CTA button text"
+        hero_cta_secondary:
+          type: string
+          description: "Secondary CTA button text"
+        hero_image_url:
+          type: string
+          description: "Hero background image URL from Supabase"
+        # Features Section
+        features_heading:
+          type: string
+          description: "Features section heading"
+        features_description:
+          type: string
+          description: "Features section description"
+        features_list:
+          type: array
+          items:
+            type: string
+          description: "List of feature items"
+        features_image_url:
+          type: string
+          description: "Features section image URL from Supabase"
+        # Immersion Section
+        immersion_heading:
+          type: string
+          description: "Immersion section heading"
+        immersion_description:
+          type: string
+          description: "Immersion section description"
+        immersion_advantages_heading:
+          type: string
+          description: "Location advantages box heading"
+        immersion_quote:
+          type: string
+          description: "Quote text in location advantages"
+        immersion_image_url:
+          type: string
+          description: "Immersion section image URL from Supabase"
+        # Investment Section
+        investment_heading:
+          type: string
+          description: "Investment section heading"
+        investment_description:
+          type: string
+          description: "Investment section description"
+        investment_features:
+          type: array
+          items:
+            type: string
+          description: "List of investment features"
+        investment_cta:
+          type: string
+          description: "Investment section CTA text"
+        investment_image_url:
+          type: string
+          description: "Investment section image URL from Supabase"
+        # Pricing Section
+        pricing_heading:
+          type: string
+          description: "Pricing section heading"
+        pricing_subheading:
+          type: string
+          description: "Pricing section subheading"
+        # Footer
+        footer_tagline:
+          type: string
+          description: "Footer tagline text"
       required:
         - whatsapp_phone
         - contact_email
@@ -359,3 +438,82 @@ components:
         pdf_google_drive_link:
           type: string
           description: "Google Drive link to PDF brochure"
+        # Hero Section
+        hero_badge_text:
+          type: string
+          description: "Hero badge text"
+        hero_heading:
+          type: string
+          description: "Hero main heading"
+        hero_subheading:
+          type: string
+          description: "Hero subheading/description"
+        hero_cta_primary:
+          type: string
+          description: "Primary CTA button text"
+        hero_cta_secondary:
+          type: string
+          description: "Secondary CTA button text"
+        hero_image_url:
+          type: string
+          description: "Hero background image URL from Supabase"
+        # Features Section
+        features_heading:
+          type: string
+          description: "Features section heading"
+        features_description:
+          type: string
+          description: "Features section description"
+        features_list:
+          type: array
+          items:
+            type: string
+          description: "List of feature items"
+        features_image_url:
+          type: string
+          description: "Features section image URL from Supabase"
+        # Immersion Section
+        immersion_heading:
+          type: string
+          description: "Immersion section heading"
+        immersion_description:
+          type: string
+          description: "Immersion section description"
+        immersion_advantages_heading:
+          type: string
+          description: "Location advantages box heading"
+        immersion_quote:
+          type: string
+          description: "Quote text in location advantages"
+        immersion_image_url:
+          type: string
+          description: "Immersion section image URL from Supabase"
+        # Investment Section
+        investment_heading:
+          type: string
+          description: "Investment section heading"
+        investment_description:
+          type: string
+          description: "Investment section description"
+        investment_features:
+          type: array
+          items:
+            type: string
+          description: "List of investment features"
+        investment_cta:
+          type: string
+          description: "Investment section CTA text"
+        investment_image_url:
+          type: string
+          description: "Investment section image URL from Supabase"
+        # Pricing Section
+        pricing_heading:
+          type: string
+          description: "Pricing section heading"
+        pricing_subheading:
+          type: string
+          description: "Pricing section subheading"
+        # Footer
+        footer_tagline:
+          type: string
+          description: "Footer tagline text"

@@ -1,7 +1,7 @@
 import { errorResponse } from "./utils";
 
 const AUTH_REALM = "Advaitam Admin";
-const PROTECTED_PATHS = ["/admin", "/api/leads/stats"];
+const PROTECTED_PATHS = ["/admin", "/api/leads/stats", "/api/upload"];
 
 async function sha256(message: string): Promise<string> {
   const encoder = new TextEncoder();

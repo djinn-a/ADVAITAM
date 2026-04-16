@@ -60,6 +60,35 @@ export const siteSettingsSchema = z
         message: "Must be a valid URL",
       })
       .optional(),
+    // Hero Section
+    hero_badge_text: z.string().optional(),
+    hero_heading: z.string().optional(),
+    hero_subheading: z.string().optional(),
+    hero_cta_primary: z.string().optional(),
+    hero_cta_secondary: z.string().optional(),
+    hero_image_url: z.string().optional(),
+    // Features Section
+    features_heading: z.string().optional(),
+    features_description: z.string().optional(),
+    features_list: z.array(z.string()).optional(),
+    features_image_url: z.string().optional(),
+    // Immersion Section
+    immersion_heading: z.string().optional(),
+    immersion_description: z.string().optional(),
+    immersion_advantages_heading: z.string().optional(),
+    immersion_quote: z.string().optional(),
+    immersion_image_url: z.string().optional(),
+    // Investment Section
+    investment_heading: z.string().optional(),
+    investment_description: z.string().optional(),
+    investment_features: z.array(z.string()).optional(),
+    investment_cta: z.string().optional(),
+    investment_image_url: z.string().optional(),
+    // Pricing Section
+    pricing_heading: z.string().optional(),
+    pricing_subheading: z.string().optional(),
+    // Footer
+    footer_tagline: z.string().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, {
     message: "At least one setting must be provided.",

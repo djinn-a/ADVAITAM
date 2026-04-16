@@ -23,4 +23,50 @@ export interface SiteSettings {
   location_advantages?: string[];
   /** Google Drive link to PDF brochure */
   pdf_google_drive_link?: string;
+  /** Hero badge text (e.g., 'Limited Inventory • High ROI Potential') */
+  hero_badge_text?: string;
+  /** Hero main heading */
+  hero_heading?: string;
+  /** Hero subheading/description */
+  hero_subheading?: string;
+  /** Primary CTA button text */
+  hero_cta_primary?: string;
+  /** Secondary CTA button text */
+  hero_cta_secondary?: string;
+  /** Hero background image URL from Supabase */
+  hero_image_url?: string;
+  /** Features section heading */
+  features_heading?: string;
+  /** Features section description */
+  features_description?: string;
+  /** List of feature items */
+  features_list?: string[];
+  /** Features section image URL from Supabase */
+  features_image_url?: string;
+  /** Immersion section heading */
+  immersion_heading?: string;
+  /** Immersion section description */
+  immersion_description?: string;
+  /** Location advantages box heading */
+  immersion_advantages_heading?: string;
+  /** Quote text in location advantages */
+  immersion_quote?: string;
+  /** Immersion section image URL from Supabase */
+  immersion_image_url?: string;
+  /** Investment section heading */
+  investment_heading?: string;
+  /** Investment section description */
+  investment_description?: string;
+  /** List of investment features */
+  investment_features?: string[];
+  /** Investment section CTA text */
+  investment_cta?: string;
+  /** Investment section image URL from Supabase */
+  investment_image_url?: string;
+  /** Pricing section heading */
+  pricing_heading?: string;
+  /** Pricing section subheading */
+  pricing_subheading?: string;
+  /** Footer tagline text */
+  footer_tagline?: string;
 }
