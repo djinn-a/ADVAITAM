@@ -34,6 +34,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -66,6 +67,9 @@ import {
   Plus,
   Layout,
   Type,
+  FolderOpen,
+  Check,
+  X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -82,6 +86,14 @@ import {
 } from "@workspace/api-client-react";
 
 // Section Editor Component
+interface BucketImage {
+  name: string;
+  url: string;
+  updatedAt: string;
+  size: number;
+  contentType: string;
+}
+
 interface SectionEditorProps {
   title: string;
   icon: React.ReactNode;
@@ -90,6 +102,8 @@ interface SectionEditorProps {
   imageUrl?: string;
   onImageUpload?: (file: File) => void;
   uploading?: boolean;
+  section?: string;
+  onSelectFromBucket?: (url: string) => void;
 }
 
 function SectionEditor({
@@ -100,14 +114,50 @@ function SectionEditor({
   imageUrl,
   onImageUpload,
   uploading,
+  section,
+  onSelectFromBucket,
 }: SectionEditorProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isBucketDialogOpen, setIsBucketDialogOpen] = React.useState(false);
+  const [bucketImages, setBucketImages] = React.useState<BucketImage[]>([]);
+  const [loadingBucket, setLoadingBucket] = React.useState(false);
+  const [selectedBucketImage, setSelectedBucketImage] = React.useState<
+    string | null
+  >(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && onImageUpload) {
       onImageUpload(file);
     }
+  };
+
+  const openBucketDialog = async () => {
+    if (!section) return;
+    setIsBucketDialogOpen(true);
+    setLoadingBucket(true);
+    try {
+      const response = await fetch(`/api/images?section=${section}`, {
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch images");
+      }
+      const data = await response.json();
+      setBucketImages(data.images || []);
+    } catch (error) {
+      console.error("Error fetching bucket images:", error);
+    } finally {
+      setLoadingBucket(false);
+    }
+  };
+
+  const handleSelectImage = () => {
+    if (selectedBucketImage && onSelectFromBucket) {
+      onSelectFromBucket(selectedBucketImage);
+    }
+    setIsBucketDialogOpen(false);
+    setSelectedBucketImage(null);
   };
 
   return (
@@ -153,24 +203,36 @@ function SectionEditor({
                       accept="image/jpeg,image/png,image/webp"
                       className="hidden"
                     />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploading}
-                    >
-                      {uploading ? (
-                        <>
-                          <Upload className="w-4 h-4 mr-1 animate-pulse" />{" "}
-                          Uploading...
-                        </>
-                      ) : (
-                        <>
-                          <Upload className="w-4 h-4 mr-1" /> Upload Image
-                        </>
-                      )}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                      >
+                        {uploading ? (
+                          <>
+                            <Upload className="w-4 h-4 mr-1 animate-pulse" />{" "}
+                            Uploading...
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-4 h-4 mr-1" /> Upload Image
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={openBucketDialog}
+                        disabled={uploading}
+                      >
+                        <FolderOpen className="w-4 h-4 mr-1" /> Select from
+                        Bucket
+                      </Button>
+                    </div>
                     <p className="text-xs text-muted-foreground">
                       Max 5MB. JPEG, PNG, or WebP.
                     </p>
@@ -182,6 +244,83 @@ function SectionEditor({
           </>
         )}
       </CardContent>
+
+      {/* Bucket Image Selection Dialog */}
+      <Dialog open={isBucketDialogOpen} onOpenChange={setIsBucketDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FolderOpen className="w-5 h-5" />
+              Select Image from Bucket
+            </DialogTitle>
+            <DialogDescription>
+              Choose an existing image from the Supabase storage bucket for this
+              section.
+            </DialogDescription>
+          </DialogHeader>
+
+          {loadingBucket ? (
+            <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="aspect-square rounded-lg" />
+              ))}
+            </div>
+          ) : bucketImages.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p>No images found in this section's bucket.</p>
+              <p className="text-sm mt-1">
+                Upload an image first to see it here.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
+              {bucketImages.map((image) => (
+                <div
+                  key={image.name}
+                  className={`relative aspect-square rounded-lg overflow-hidden border-2 cursor-pointer transition-all hover:opacity-80 ${
+                    selectedBucketImage === image.url
+                      ? "border-primary ring-2 ring-primary/20"
+                      : "border-border"
+                  }`}
+                  onClick={() => setSelectedBucketImage(image.url)}
+                >
+                  <img
+                    src={image.url}
+                    alt={image.name}
+                    className="w-full h-full object-cover"
+                  />
+                  {selectedBucketImage === image.url && (
+                    <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                      <div className="bg-primary text-primary-foreground rounded-full p-1">
+                        <Check className="w-4 h-4" />
+                      </div>
+                    </div>
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 truncate">
+                    {image.name.split("/").pop()}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsBucketDialogOpen(false);
+                setSelectedBucketImage(null);
+              }}
+            >
+              <X className="w-4 h-4 mr-1" /> Cancel
+            </Button>
+            <Button onClick={handleSelectImage} disabled={!selectedBucketImage}>
+              <Check className="w-4 h-4 mr-1" /> Select Image
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
@@ -375,6 +514,18 @@ export default function Admin() {
     } finally {
       setUploadingSection(null);
     }
+  };
+
+  const handleSelectFromBucket = (section: string, url: string) => {
+    setSettingsForm((prev) => ({
+      ...prev,
+      [`${section}_image_url`]: url,
+    }));
+
+    toast({
+      title: "Image selected",
+      description: "The image from bucket has been selected for this section.",
+    });
   };
 
   const filteredLeads = useMemo(() => {
@@ -832,6 +983,8 @@ export default function Admin() {
               imageUrl={settingsForm.hero_image_url}
               onImageUpload={(file) => handleImageUpload("hero", file)}
               uploading={uploadingSection === "hero"}
+              section="hero"
+              onSelectFromBucket={(url) => handleSelectFromBucket("hero", url)}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -920,6 +1073,10 @@ export default function Admin() {
               imageUrl={settingsForm.features_image_url}
               onImageUpload={(file) => handleImageUpload("features", file)}
               uploading={uploadingSection === "features"}
+              section="features"
+              onSelectFromBucket={(url) =>
+                handleSelectFromBucket("features", url)
+              }
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
@@ -1016,6 +1173,10 @@ export default function Admin() {
               imageUrl={settingsForm.immersion_image_url}
               onImageUpload={(file) => handleImageUpload("immersion", file)}
               uploading={uploadingSection === "immersion"}
+              section="immersion"
+              onSelectFromBucket={(url) =>
+                handleSelectFromBucket("immersion", url)
+              }
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
@@ -1090,6 +1251,10 @@ export default function Admin() {
               imageUrl={settingsForm.investment_image_url}
               onImageUpload={(file) => handleImageUpload("investment", file)}
               uploading={uploadingSection === "investment"}
+              section="investment"
+              onSelectFromBucket={(url) =>
+                handleSelectFromBucket("investment", url)
+              }
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">

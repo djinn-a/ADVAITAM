@@ -210,6 +210,49 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   current_availability: "9",
   discount_pricing: "15",
   discount_exit_intent: "15L",
+  base_price: "1.50",
+  // Hero Section
+  hero_badge_text: "Limited Inventory • High ROI Potential",
+  hero_heading: "Own a Private Forest Villa in Jim Corbett",
+  hero_subheading:
+    "Only 17 Ultra-Luxury Villas with Private Pool, Rooftop Garden & Airbnb Income Potential — Just 5 Hours from Delhi NCR.",
+  hero_cta_primary: "Get Brochure",
+  hero_cta_secondary: "Book Site Visit",
+  hero_image_url: "/hero-bg.png",
+  // Features Section
+  features_heading: "The Definition of Exclusive",
+  features_description:
+    "Advaitam is not a resort. It is a private sanctuary. Designed for those who seek the silence of the deep woods without compromising on uncompromising luxury.",
+  features_list: JSON.stringify([
+    "Private Swimming Pool in Every Villa",
+    "Rooftop Garden Terrace",
+    "2070 Sq. Ft. Built-Up Area",
+    "Premium Finishes & Modular Kitchen",
+  ]),
+  features_image_url: "/villa-exterior.png",
+  // Immersion Section
+  immersion_heading: "Where the Forest Meets the Firelight",
+  immersion_description:
+    "Floor-to-ceiling glass erases the boundary between your living room and the ancient woods. Every material—from rich timber to raw stone—has been chosen to ground you in nature while enveloping you in warmth.",
+  immersion_advantages_heading: "Location Advantages",
+  immersion_quote: '"Close enough for convenience. Far enough for peace."',
+  immersion_image_url: "/villa-interior.png",
+  // Investment Section
+  investment_heading: "A Legacy Investment",
+  investment_description:
+    "Beyond a weekend escape, Advaitam is a high-yield asset. With professional property management, your villa works for you when you're not there.",
+  investment_features: JSON.stringify([
+    "10–15% Expected Appreciation",
+    "High Demand for Luxury Airbnb Stays",
+    "Hassle-Free Professional Management",
+  ]),
+  investment_cta: "Get Rental Income Projection",
+  investment_image_url: "/rooftop-terrace.png",
+  // Pricing Section
+  pricing_heading: "Claim Your Sanctuary",
+  pricing_subheading: "Only 17 Villas. Once Sold, Gone Forever.",
+  // Footer
+  footer_tagline: "Luxury Forest Villas in Jim Corbett.",
 };
 
 export async function getAllSettings(env: any): Promise<Record<string, any>> {
