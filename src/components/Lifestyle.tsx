@@ -9,15 +9,15 @@ const images = [
 
 export default function Lifestyle() {
   return (
-    <section className="px-6 py-12 sm:px-10 sm:py-16">
-      <div className="mx-auto flex max-w-[1400px] flex-col items-center gap-12 lg:flex-row lg:gap-16">
+    <section className="bg-[#f6f5f2] px-6 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-12 lg:flex-row lg:gap-16">
         
         {/* Text Content */}
-        <div className="w-full shrink-0 lg:w-[35%] xl:w-[30%]">
-          <p className="eyebrow font-bold text-brass">CRAFTED FOR LIFE</p>
-          <h2 className="mt-6 font-display text-4xl leading-[1.1] text-charcoal sm:text-5xl lg:text-[3.25rem]">
-            Spaces that inspire.<br />
-            Experiences that stay.
+        <div className="w-full shrink-0 lg:w-[33%] xl:w-[32%]">
+          <p className="eyebrow font-bold text-brass uppercase tracking-[0.15em] text-[11px]">CRAFTED FOR LIFE</p>
+          <h2 className="mt-6 font-display text-4xl leading-[1.15] text-charcoal sm:text-5xl lg:text-[2.25rem] xl:text-[2.5rem]">
+            <span className="whitespace-nowrap">Spaces that inspire.</span><br />
+            <span className="whitespace-nowrap">Experiences that stay.</span>
           </h2>
           <a
             href="#lifestyle"
@@ -31,10 +31,10 @@ export default function Lifestyle() {
         </div>
 
         {/* Image Grid */}
-        <div className="w-full">
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 sm:gap-6">
+        <div className="w-full lg:w-[67%] xl:w-[68%]">
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-4 sm:gap-3">
             {images.map((img) => (
-              <div key={img.id} className="group relative aspect-square overflow-hidden bg-cream-soft">
+              <div key={img.id} className="group relative aspect-[5/4] overflow-hidden bg-cream-soft">
                 <Image
                   src={img.src}
                   alt={img.alt}
