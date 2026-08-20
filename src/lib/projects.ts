@@ -12,23 +12,41 @@ export const projects: Project[] = [
     name: "ADVAITAM 17",
     tagline: "Premium Residences",
     description: "Where nature meets contemporary living.",
-    image:
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop",
+    image: "/images/project1.jpg",
   },
   {
     id: "advaitam-enclave",
     name: "ADVAITAM ENCLAVE",
     tagline: "Luxury Villas",
     description: "Private spaces. Timeless lifestyle.",
-    image:
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1200&auto=format&fit=crop",
+    image: "/images/project2.jpg",
   },
   {
     id: "advaitam-resorts",
     name: "ADVAITAM RESORTS",
     tagline: "Resort Living",
     description: "Rejuvenate. Reconnect. Rediscover.",
-    image:
-      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1200&auto=format&fit=crop",
+    image: "/images/project3.jpg",
+  },
+  {
+    id: "advaitam-woods",
+    name: "ADVAITAM WOODS",
+    tagline: "Forest Retreats",
+    description: "Immerse yourself in lush greenery.",
+    image: "/images/project4.jpg",
+  },
+  {
+    id: "advaitam-peaks",
+    name: "ADVAITAM PEAKS",
+    tagline: "Hilltop Estates",
+    description: "Breathtaking views and serene living.",
+    image: "/images/project5.jpg",
+  },
+  {
+    id: "advaitam-waters",
+    name: "ADVAITAM WATERS",
+    tagline: "Lakeside Homes",
+    description: "Tranquility by the pristine waters.",
+    image: "/images/project6.jpg",
   },
 ];
