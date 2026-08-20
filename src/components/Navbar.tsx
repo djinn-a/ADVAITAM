@@ -52,6 +52,7 @@ export default function Navbar() {
             BOOK A SITE VISIT
           </a>
           <button
+            type="button"
             aria-label="Menu"
             className="flex h-9 w-9 items-center justify-center rounded-full border border-ivory/40 text-ivory hover:border-brass hover:text-brass"
           >
@@ -60,6 +61,7 @@ export default function Navbar() {
         </div>
 
         <button
+          type="button"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
