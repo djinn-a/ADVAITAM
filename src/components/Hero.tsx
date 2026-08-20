@@ -1,11 +1,11 @@
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 
 export default function Hero() {
   return (
     <section
       id="home"
-      className="relative flex h-[100svh] min-h-[640px] w-full items-center overflow-hidden bg-ink"
+      className="relative flex h-[100svh] min-h-[640px] w-full pt-40 sm:pt-48 overflow-hidden bg-ink"
     >
       <Image
         src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2400&auto=format&fit=crop"
@@ -26,37 +26,56 @@ export default function Hero() {
             <span className="block font-medium italic text-brass-soft">
               Nature-Inspired
             </span>
-            <span className="block font-light">Luxury Destinations</span>
+            <span className="block font-light whitespace-nowrap">Luxury Destinations</span>
           </h1>
 
-          <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-ivory/75">
-            Advaitam creates exceptional spaces that harmonize luxury, nature
-            and timeless living.
+          <p className="mt-8 max-w-sm text-[13px] leading-relaxed text-ivory/70">
+            Advaitam creates exceptional spaces that<br className="hidden sm:block" />
+            harmonize luxury, nature and timeless living.
           </p>
 
-          <div className="mt-9">
+          <div className="mt-10">
             <a
               href="#projects"
-              className="inline-flex items-center gap-3 text-[12px] font-semibold tracking-[0.16em] text-ivory"
+              className="group inline-flex items-center gap-4 text-[12px] font-semibold tracking-[0.16em] text-brass"
             >
-              <span className="border-b border-brass pb-1">
+              <span className="border-b border-brass/50 pb-1 group-hover:border-brass transition-colors">
                 EXPLORE OUR PROJECTS
               </span>
-              <ArrowRight size={16} className="text-brass" />
+              <svg 
+                width="40" 
+                height="12" 
+                viewBox="0 0 40 12" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="text-brass transition-transform group-hover:translate-x-2"
+              >
+                <path d="M0 6H38M38 6L33 1M38 6L33 11" stroke="currentColor" strokeWidth="1"/>
+              </svg>
             </a>
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-10 left-6 z-10 hidden flex-col items-center gap-3 sm:left-10 sm:flex">
+      <div className="absolute bottom-10 left-6 top-48 z-10 hidden flex-col items-center sm:left-10 sm:flex">
         <span className="text-[10px] font-semibold tracking-[0.2em] text-ivory/70">01</span>
-        <span className="relative h-16 w-px bg-ivory/30">
-          <span className="absolute left-0 top-0 h-1/3 w-px bg-ivory" />
-        </span>
+        
+        <div className="mt-4 flex flex-col items-center gap-1.5">
+          <div className="h-1 w-1 rounded-full bg-brass-soft"></div>
+          <div className="h-1 w-1 rounded-full bg-ivory/30"></div>
+          <div className="h-1 w-1 rounded-full bg-ivory/30"></div>
+        </div>
+
+        <div className="my-4 w-px flex-grow bg-ivory/30"></div>
+
         <span className="text-[10px] font-semibold tracking-[0.2em] text-ivory/40">05</span>
-        <span className="mt-2 text-[10px] font-semibold tracking-[0.2em] text-ivory/60">
-          SCROLL
-        </span>
+        
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <span className="text-[10px] font-semibold tracking-[0.2em] text-ivory/60">
+            SCROLL
+          </span>
+          <ArrowDown size={14} className="text-ivory/60 animate-bounce" />
+        </div>
       </div>
     </section>
   );

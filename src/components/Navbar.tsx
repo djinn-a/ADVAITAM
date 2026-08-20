@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 
 const LINKS = [
   { label: "HOME", href: "#home" },
@@ -18,12 +19,17 @@ export default function Navbar() {
   return (
     <header className="absolute inset-x-0 top-0 z-50">
       <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6 sm:px-10">
-        <a href="#home" className="flex flex-col leading-none">
-          <span className="font-display text-2xl tracking-[0.18em] text-ivory">
-            ADVAITAM
-          </span>
-          <span className="mt-1 hidden text-[8px] tracking-[0.32em] text-ivory/60 sm:block">
-            BUILDING DESTINATIONS
+        <a href="#home" className="flex flex-col items-center leading-none">
+          <Image
+            src="/Advaitam-Logo.png"
+            alt="Advaitam Logo"
+            width={240}
+            height={64}
+            className="h-10 w-auto object-contain sm:h-12 lg:h-14"
+            priority
+          />
+          <span className="mt-1.5 hidden text-[8px] tracking-[0.35em] text-ivory/70 sm:block">
+            - BUILDING DESTINATIONS -
           </span>
         </a>
 
