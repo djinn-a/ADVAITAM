@@ -4,11 +4,11 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-ink px-6 pt-12 pb-8 sm:px-10 text-ivory">
-      <div className="mx-auto max-w-[1400px]">
+    <footer className="bg-ink pt-12 pb-8 text-ivory">
+      <div className="mx-auto w-full max-w-[1400px] px-6 sm:px-10 md:px-16 lg:px-24">
         {/* Main Footer Grid */}
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-          
+
           {/* Column 1: Brand & Social */}
           <div className="flex flex-col gap-6">
             <div>

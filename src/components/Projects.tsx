@@ -83,6 +83,7 @@ export default function Projects() {
         fill
         sizes="100vw"
         priority
+        unoptimized
         className="object-cover"
       />
       <div className="absolute inset-0 bg-ink/75" />

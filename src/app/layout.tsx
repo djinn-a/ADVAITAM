@@ -29,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${manrope.variable}`}>
-      <body className="antialiased bg-cream text-charcoal">{children}</body>
+    <html lang="en" className={`${cormorant.variable} ${manrope.variable} scroll-smooth`}>
+      <body className="antialiased bg-cream text-charcoal overflow-x-hidden w-full">{children}</body>
     </html>
   );
 }

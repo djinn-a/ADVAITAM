@@ -2,12 +2,12 @@ import { HiOutlineArrowDownTray } from "react-icons/hi2";
 
 export default function CTA() {
   return (
-    <section className="bg-ink px-6 py-12 sm:px-10 border-b border-ivory/10">
-      <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-10 md:flex-row">
+    <section className="bg-ink py-8 border-b border-ivory/10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-6 lg:flex-row px-6 sm:px-10">
         
         {/* Left Side: Headline */}
-        <div className="text-center md:text-left">
-          <h2 className="font-display text-4xl text-ivory sm:text-5xl">
+        <div className="text-center lg:text-left">
+          <h2 className="font-display text-2xl text-ivory sm:text-3xl lg:text-[34px] lg:whitespace-nowrap">
             Begin your journey with Advaitam.
           </h2>
         </div>

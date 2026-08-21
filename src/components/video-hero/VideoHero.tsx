@@ -37,6 +37,11 @@ export function VideoHero({
     onEnded?.();
   }, [onEnded]);
 
+  const isFloatingRef = useRef(false);
+  useEffect(() => {
+    isFloatingRef.current = isFloating;
+  }, [isFloating]);
+
   useEffect(() => {
     const video = videoRef.current;
     const section = sectionRef.current;
@@ -45,15 +50,22 @@ export function VideoHero({
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
-        if (!entry.isIntersecting && !video.paused) {
-          setIsFloating(true);
-        } else if (entry.isIntersecting) {
-          setIsFloating(false);
+        const shouldFloat = !entry.isIntersecting && !video.paused;
+
+        if (isFloatingRef.current !== shouldFloat) {
+          if (document.startViewTransition) {
+            document.startViewTransition(() => {
+              setIsFloating(shouldFloat);
+            });
+          } else {
+            setIsFloating(shouldFloat);
+          }
+          isFloatingRef.current = shouldFloat;
         }
       },
       { threshold: 0 }
     );
-    
+
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
@@ -73,9 +85,10 @@ export function VideoHero({
       className={`group/section relative w-full h-[50vh] min-h-[450px] overflow-hidden bg-ink ${className}`}
     >
       {/* ========== NATIVE VIDEO OR FLOATING MINI-PLAYER ========== */}
-      <div 
-        className={isFloating 
-          ? "fixed bottom-6 right-6 z-50 w-72 sm:w-80 aspect-video shadow-2xl rounded-lg overflow-hidden transition-all duration-300 pointer-events-auto bg-ink border border-ivory/20" 
+      <div
+        style={{ viewTransitionName: 'hero-video-player' }}
+        className={isFloating
+          ? "fixed bottom-6 right-6 z-50 w-72 sm:w-80 aspect-video shadow-2xl rounded-lg overflow-hidden pointer-events-auto bg-ink border border-ivory/20"
           : "absolute inset-0 z-0"
         }
       >
@@ -83,14 +96,16 @@ export function VideoHero({
           ref={videoRef}
           src={src}
           playsInline
-          className="h-full w-full object-cover pointer-events-none"
+          loop
+          style={{ objectFit: 'cover' }}
+          className="absolute inset-0 h-full w-full object-cover pointer-events-none"
           onEnded={handleEnded}
           translate="no"
           controlsList="nodownload"
         >
           <track kind="captions" />
         </video>
-        
+
         {isFloating && (
           <button
             type="button"
@@ -149,21 +164,21 @@ export function VideoHero({
       {!isFloating && (
         <button
           type="button"
-        onClick={togglePlay}
-        className={`absolute top-[80%] md:top-1/2 left-1/2 z-30 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-4 group transition-opacity duration-500 ${isPlaying ? 'opacity-0 group-hover/section:opacity-100' : 'opacity-100'}`}
-        aria-label={isPlaying ? "Pause video" : "Play video"}
-      >
-        <div className="flex h-16 w-16 items-center justify-center rounded-full border border-ivory/40 transition group-hover:border-ivory/80 sm:h-[72px] sm:w-[72px] bg-ink/10 backdrop-blur-sm">
-          {isPlaying ? (
-            <Pause className="h-6 w-6 fill-ivory text-ivory sm:h-7 sm:w-7" />
-          ) : (
-            <Play className="ml-1 h-6 w-6 fill-ivory text-ivory sm:h-7 sm:w-7" />
-          )}
-        </div>
-        <span className="text-[10px] font-bold tracking-[0.15em] text-brass uppercase">
-          {isPlaying ? "PAUSE VIDEO" : "PLAY VIDEO"}
-        </span>
-      </button>
+          onClick={togglePlay}
+          className={`absolute top-[80%] md:top-1/2 left-1/2 z-30 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-4 group transition-opacity duration-500 ${isPlaying ? 'opacity-0 group-hover/section:opacity-100' : 'opacity-100'}`}
+          aria-label={isPlaying ? "Pause video" : "Play video"}
+        >
+          <div className="flex h-16 w-16 items-center justify-center rounded-full border border-ivory/40 transition group-hover:border-ivory/80 sm:h-[72px] sm:w-[72px] bg-ink/10 backdrop-blur-sm">
+            {isPlaying ? (
+              <Pause className="h-6 w-6 fill-ivory text-ivory sm:h-7 sm:w-7" />
+            ) : (
+              <Play className="ml-1 h-6 w-6 fill-ivory text-ivory sm:h-7 sm:w-7" />
+            )}
+          </div>
+          <span className="text-[10px] font-bold tracking-[0.15em] text-brass uppercase">
+            {isPlaying ? "PAUSE VIDEO" : "PLAY VIDEO"}
+          </span>
+        </button>
       )}
 
     </section>
