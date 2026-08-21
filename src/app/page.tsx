@@ -3,9 +3,11 @@ import Hero from "@/components/Hero";
 import Philosophy from "@/components/Philosophy";
 import Projects from "@/components/Projects";
 import Lifestyle from "@/components/Lifestyle";
-import CTA from "@/components/CTA";
+import Cta from "@/components/Cta";
 import Footer from "@/components/Footer";
 import { VideoHero } from "@/components/video-hero";
+import NatureInspired from "@/components/NatureInspired";
+
 
 export default function Home() {
   return (
@@ -13,6 +15,7 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
+        <NatureInspired/>
         <Philosophy />
         <Projects />
         <Lifestyle />
@@ -22,7 +25,7 @@ export default function Home() {
           poster="/images/custom_poster.jpg"
         />
 
-        <CTA />
+        <Cta />
       </main>
       <Footer />
     </>

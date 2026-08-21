@@ -33,23 +33,6 @@ export default function Navbar() {
           </span>
         </a>
 
-        <ul className="hidden items-center gap-10 lg:flex">
-          {LINKS.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className={`text-[12px] font-normal tracking-[0.1em] hover:text-brass-soft relative ${
-                  link.label === "HOME"
-                    ? "text-ivory after:absolute after:-bottom-1 after:left-0 after:h-[1px] after:w-full after:bg-ivory"
-                    : "text-ivory/90"
-                }`}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-
         <div className="hidden items-center gap-5 lg:flex">
           <a
             href="#contact"
@@ -57,12 +40,12 @@ export default function Navbar() {
           >
             BOOK A SITE VISIT
           </a>
-          <button
-            aria-label="Menu"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/30 text-ivory hover:border-brass hover:text-brass"
+          <a
+            href="#partner"
+            className="border border-ivory/30 px-6 py-2.5 text-[11px] font-medium tracking-[0.12em] text-ivory hover:border-brass hover:bg-brass hover:text-ink transition-colors"
           >
-            <Menu size={18} strokeWidth={1.5} />
-          </button>
+            BECOME OUR PARTNER
+          </a>
         </div>
 
         <button

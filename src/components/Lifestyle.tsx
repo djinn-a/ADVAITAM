@@ -1,52 +1,80 @@
-import Image from "next/image";
-
-const images = [
-  { id: 1, src: "/images/lifestyle-1.jpg", alt: "Person walking in a lush green forest" },
-  { id: 2, src: "/images/lifestyle-2.jpg", alt: "Breathtaking mountain landscape with a luxury home" },
-  { id: 3, src: "/images/lifestyle-3.jpg", alt: "Cozy outdoor firepit area at night" },
-  { id: 4, src: "/images/lifestyle-4.jpg", alt: "Family walking together in a beautiful natural setting" },
+const differences = [
+  {
+    id: "01",
+    title: "Nature First",
+    description: "Minimal footprint construction techniques that preserve existing root systems and natural water flows."
+  },
+  {
+    id: "02",
+    title: "Enduring Design",
+    description: "Timeless architectural forms utilizing vernacular materials that weather beautifully over generations."
+  },
+  {
+    id: "03",
+    title: "Curated Location",
+    description: "Strictly selected parcels that guarantee privacy, spectacular vistas, and immediate access to wilderness."
+  },
+  {
+    id: "04",
+    title: "Uncompromising Quality",
+    description: "Artisanal craftsmanship paired with cutting-edge environmental engineering for effortless living."
+  },
+  {
+    id: "05",
+    title: "Long-term Value",
+    description: "Scarcity and enduring quality ensuring your sanctuary is both a retreat and a sound legacy asset."
+  }
 ];
 
 export default function Lifestyle() {
   return (
-    <section className="bg-[#f6f5f2] px-6 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-12 lg:flex-row lg:gap-16">
-        
-        {/* Text Content */}
-        <div className="w-full shrink-0 lg:w-[33%] xl:w-[32%]">
-          <p className="eyebrow font-bold text-brass uppercase tracking-[0.15em] text-[11px]">CRAFTED FOR LIFE</p>
-          <h2 className="mt-6 font-display text-4xl leading-[1.15] text-charcoal sm:text-5xl lg:text-[2.25rem] xl:text-[2.5rem]">
-            <span className="whitespace-nowrap">Spaces that inspire.</span><br />
-            <span className="whitespace-nowrap">Experiences that stay.</span>
-          </h2>
-          <a
-            href="#lifestyle"
-            className="group mt-10 inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.15em] text-brass transition-colors duration-300 hover:text-brass-soft"
-          >
-            VIEW LIFESTYLE{" "}
-            <span className="text-brass transition-transform duration-300 group-hover:translate-x-1">
-              &rarr;
-            </span>
-          </a>
-        </div>
+    <section id="lifestyle" className="bg-cream px-6 py-20 sm:px-10 sm:py-28 lg:py-40">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8">
+          
+          {/* Left Column: Title and Intro */}
+          <div className="col-span-1 lg:col-span-4 flex flex-col">
+            <div className="sticky top-40">
+              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl text-charcoal leading-tight mb-8">
+                The Advaitam<br />Difference
+              </h2>
+              <p className="text-stone text-sm sm:text-base leading-relaxed max-w-sm">
+                Our approach is uncompromising. Every decision is weighed against its impact on the land and the quality of life it provides.
+              </p>
+            </div>
+          </div>
 
-        {/* Image Grid */}
-        <div className="w-full lg:w-[67%] xl:w-[68%]">
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-4 sm:gap-3">
-            {images.map((img) => (
-              <div key={img.id} className="group relative aspect-[5/4] overflow-hidden bg-cream-soft">
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
+          {/* Spacer for desktop */}
+          <div className="hidden lg:block lg:col-span-1"></div>
+
+          {/* Right Column: Difference List */}
+          <div className="col-span-1 lg:col-span-7 flex flex-col">
+            {differences.map((item, index) => (
+              <div 
+                key={item.id} 
+                className={`flex gap-6 sm:gap-12 py-10 sm:py-12 ${index === 0 ? 'border-t-0 pt-0 lg:pt-0' : 'border-t border-charcoal/20'}`}
+              >
+                {/* Number */}
+                <div className="flex-shrink-0 pt-1.5">
+                  <span className="text-stone/60 text-xs sm:text-sm font-semibold tracking-widest">
+                    {item.id}
+                  </span>
+                </div>
+                
+                {/* Content */}
+                <div className="flex flex-col">
+                  <h3 className="font-display text-2xl sm:text-3xl text-charcoal mb-4">
+                    {item.title}
+                  </h3>
+                  <p className="text-stone text-sm sm:text-base leading-relaxed max-w-xl">
+                    {item.description}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
-        </div>
 
+        </div>
       </div>
     </section>
   );

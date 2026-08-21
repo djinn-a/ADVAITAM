@@ -1,6 +1,6 @@
 import { HiOutlineArrowDownTray } from "react-icons/hi2";
 
-export default function CTA() {
+export default function Cta() {
   return (
     <section className="bg-ink py-8 border-b border-ivory/10">
       <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-6 lg:flex-row px-6 sm:px-10">
