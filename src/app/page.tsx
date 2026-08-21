@@ -18,7 +18,7 @@ export default function Home() {
         <Lifestyle />
 
         <VideoHero
-          src="/videos/dummy.mp4"
+          src="/videos/origin_dummy.mp4"
           poster="/images/custom_poster.jpg"
         />
 
