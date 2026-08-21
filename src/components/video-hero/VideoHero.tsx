@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Play, Pause, X, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, X } from "lucide-react";
 import { VideoHeroProps } from "./types";
 
 export function VideoHero({
@@ -18,7 +18,7 @@ export function VideoHero({
 }: Readonly<VideoHeroProps>) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFloating, setIsFloating] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -97,7 +97,7 @@ export function VideoHero({
           ref={videoRef}
           src={src}
           playsInline
-          muted={isMuted}
+          muted
           className="h-full w-full object-cover pointer-events-none scale-[1.35] md:scale-100"
           onEnded={handleEnded}
           translate="no"
@@ -108,14 +108,7 @@ export function VideoHero({
 
         {isFloating && (
           <div className="absolute top-2 right-2 flex items-center gap-2">
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }}
-              className="p-1.5 bg-ink/80 hover:bg-ink rounded-full text-ivory/80 hover:text-ivory backdrop-blur-sm transition-colors border border-ivory/20"
-              aria-label={isMuted ? "Unmute" : "Mute"}
-            >
-              {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-            </button>
+
             <button
               type="button"
               onClick={closeFloating}
@@ -191,17 +184,7 @@ export function VideoHero({
         )}
       </div>
 
-      {/* Unmute button in Hero view */}
-      {!isFloating && (
-        <button
-          type="button"
-          onClick={() => setIsMuted(!isMuted)}
-          className="absolute bottom-6 right-6 z-30 p-2 sm:p-3 bg-ink/20 hover:bg-ink/40 rounded-full text-ivory backdrop-blur-md transition-colors border border-ivory/20 pointer-events-auto"
-          aria-label={isMuted ? "Unmute video" : "Mute video"}
-        >
-          {isMuted ? <VolumeX size={18} className="sm:w-5 sm:h-5" /> : <Volume2 size={18} className="sm:w-5 sm:h-5" />}
-        </button>
-      )}
+
 
     </section>
   );

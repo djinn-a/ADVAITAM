@@ -16,12 +16,12 @@ export default function Home() {
         <Philosophy />
         <Projects />
         <Lifestyle />
-        
-        <VideoHero 
-          src="/videos/dummy.mp4" 
-          poster="/images/custom_poster.jpg" 
+
+        <VideoHero
+          src="/videos/dummy.mp4"
+          poster="/images/custom_poster.jpg"
         />
-        
+
         <CTA />
       </main>
       <Footer />
