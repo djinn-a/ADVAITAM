@@ -9,16 +9,16 @@ export default function Projects() {
   const bottomStackedProject = projects[2];
 
   return (
-    <section id="projects" className="bg-white px-6 py-16 sm:px-10 sm:py-24 lg:py-32">
+    <section id="projects" className="bg-white px-[clamp(1.5rem,5vw,2.5rem)] py-[clamp(4rem,8vw,8rem)]">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8 lg:h-[480px] xl:h-[540px]">
+        <div className="grid grid-cols-1 gap-[clamp(1.5rem,3vw,2rem)] lg:grid-cols-12 lg:h-[clamp(480px,50vw,600px)]">
           
           {/* Column 1: Text Content */}
           <div className="col-span-1 flex flex-col justify-center lg:col-span-3">
-            <h2 className="font-display text-5xl text-charcoal sm:text-6xl lg:text-7xl mb-6">
+            <h2 className="font-display text-[clamp(3rem,6vw,4.5rem)] leading-[1.1] text-charcoal mb-[clamp(1.5rem,3vw,2rem)]">
               Our<br />Projects
             </h2>
-            <p className="text-stone leading-relaxed max-w-md text-base sm:text-lg mb-8">
+            <p className="text-stone leading-relaxed max-w-md text-[clamp(1rem,1.5vw,1.125rem)] mb-[clamp(2rem,4vw,3rem)]">
               Thoughtfully designed destinations that blend contemporary living with the raw beauty of Jim Corbett.
             </p>
             <div>
@@ -34,22 +34,23 @@ export default function Projects() {
 
           {/* Column 2: Tall Project Card */}
           {tallProject && (
-            <div className="col-span-1 lg:col-span-4 relative group overflow-hidden rounded-2xl h-[350px] sm:h-[500px] lg:h-full">
+            <div className="col-span-1 lg:col-span-4 relative group overflow-hidden rounded-2xl h-[clamp(350px,50vh,500px)] lg:h-full">
               <Image
                 src={tallProject.image}
                 alt={tallProject.name}
                 fill
                 sizes="(max-width: 1024px) 100vw, 33vw"
+                fetchPriority="high"
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 will-change-transform transform-gpu"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/20 to-transparent pointer-events-none" />
               
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 flex items-end justify-between">
+              <div className="absolute inset-x-0 bottom-0 p-[clamp(1.5rem,3vw,2rem)] flex items-end justify-between">
                 <div className="pr-4">
-                  <h3 className="font-display text-2xl sm:text-3xl tracking-wide text-white mb-2 uppercase">
+                  <h3 className="font-display text-[clamp(1.5rem,3vw,1.875rem)] tracking-wide text-white mb-2 uppercase">
                     {tallProject.name}
                   </h3>
-                  <p className="text-sm sm:text-base text-white/90 line-clamp-2">
+                  <p className="text-[clamp(0.875rem,1.5vw,1rem)] text-white/90 line-clamp-2">
                     {tallProject.tagline}
                   </p>
                 </div>
@@ -65,10 +66,10 @@ export default function Projects() {
           )}
 
           {/* Column 3: Stacked Project Cards */}
-          <div className="col-span-1 lg:col-span-5 flex flex-col gap-6 lg:gap-8 lg:h-full">
+          <div className="col-span-1 lg:col-span-5 flex flex-col gap-[clamp(1.5rem,3vw,2rem)] lg:h-full">
             {/* Top Stacked Card */}
             {topStackedProject && (
-              <div className="relative group overflow-hidden rounded-2xl h-[250px] sm:h-[300px] lg:h-auto lg:flex-1">
+              <div className="relative group overflow-hidden rounded-2xl h-[clamp(250px,30vh,350px)] lg:h-auto lg:flex-1">
                 <Image
                   src={topStackedProject.image}
                   alt={topStackedProject.name}
@@ -78,12 +79,12 @@ export default function Projects() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/20 to-transparent pointer-events-none" />
                 
-                <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 flex items-end justify-between">
+                <div className="absolute inset-x-0 bottom-0 p-[clamp(1.5rem,3vw,2rem)] flex items-end justify-between">
                   <div className="pr-4">
-                    <h3 className="font-display text-2xl sm:text-3xl tracking-wide text-white mb-2 uppercase">
+                    <h3 className="font-display text-[clamp(1.5rem,3vw,1.875rem)] tracking-wide text-white mb-2 uppercase">
                       {topStackedProject.name}
                     </h3>
-                    <p className="text-sm sm:text-base text-white/90 line-clamp-2">
+                    <p className="text-[clamp(0.875rem,1.5vw,1rem)] text-white/90 line-clamp-2">
                       {topStackedProject.tagline}
                     </p>
                   </div>
@@ -100,7 +101,7 @@ export default function Projects() {
 
             {/* Bottom Stacked Card */}
             {bottomStackedProject && (
-              <div className="relative group overflow-hidden rounded-2xl h-[250px] sm:h-[300px] lg:h-auto lg:flex-1">
+              <div className="relative group overflow-hidden rounded-2xl h-[clamp(250px,30vh,350px)] lg:h-auto lg:flex-1">
                 <Image
                   src={bottomStackedProject.image}
                   alt={bottomStackedProject.name}
@@ -110,12 +111,12 @@ export default function Projects() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/20 to-transparent pointer-events-none" />
                 
-                <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 flex items-end justify-between">
+                <div className="absolute inset-x-0 bottom-0 p-[clamp(1.5rem,3vw,2rem)] flex items-end justify-between">
                   <div className="pr-4">
-                    <h3 className="font-display text-2xl sm:text-3xl tracking-wide text-white mb-2 uppercase">
+                    <h3 className="font-display text-[clamp(1.5rem,3vw,1.875rem)] tracking-wide text-white mb-2 uppercase">
                       {bottomStackedProject.name}
                     </h3>
-                    <p className="text-sm sm:text-base text-white/90 line-clamp-2">
+                    <p className="text-[clamp(0.875rem,1.5vw,1rem)] text-white/90 line-clamp-2">
                       {bottomStackedProject.tagline}
                     </p>
                   </div>

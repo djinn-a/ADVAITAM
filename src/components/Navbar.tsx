@@ -1,25 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
 import Image from "next/image";
-
-const LINKS = [
-  { label: "HOME", href: "#home" },
-  { label: "ABOUT US", href: "#about" },
-  { label: "PROJECTS", href: "#projects" },
-  { label: "WHY ADVAITAM", href: "#why" },
-  { label: "DESTINATION", href: "#destination" },
-  { label: "CONTACT", href: "#contact" },
-];
+import Link from "next/link";
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
-
   return (
     <header className="absolute inset-x-0 top-0 z-50">
-      <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6 sm:px-10">
-        <a href="#home" className="flex flex-col items-center leading-none">
+      <nav className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-[clamp(1.5rem,5vw,5rem)] py-[clamp(1.25rem,2vw,2rem)]">
+        <Link href="#home" className="flex flex-col items-center leading-none min-h-[44px] min-w-[44px] justify-center">
           <Image
             src="/Advaitam-Logo.png"
             alt="Advaitam Logo"
@@ -27,62 +15,29 @@ export default function Navbar() {
             height={48}
             className="h-6 w-auto object-contain sm:h-7 lg:h-8"
             priority
+            fetchPriority="high"
           />
-          <span className="mt-1 hidden text-[7px] tracking-[0.35em] text-ivory/70 sm:block">
+          <span className="mt-1 hidden text-[7px] tracking-[0.35em] text-[#E0E0E0] sm:block">
             - BUILDING DESTINATIONS -
           </span>
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-5 lg:flex">
-          <a
+          <Link
             href="#contact"
-            className="border border-ivory/30 px-6 py-2.5 text-[11px] font-medium tracking-[0.12em] text-ivory hover:border-brass hover:bg-brass hover:text-ink transition-colors"
+            className="flex items-center justify-center min-h-[44px] px-6 border border-white/50 text-[11px] font-medium tracking-[0.12em] text-white hover:border-white hover:bg-white/10 transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] transform-gpu will-change-transform"
           >
             BOOK A SITE VISIT
-          </a>
-          <a
+          </Link>
+          <Link
             href="#partner"
-            className="border border-ivory/30 px-6 py-2.5 text-[11px] font-medium tracking-[0.12em] text-ivory hover:border-brass hover:bg-brass hover:text-ink transition-colors"
+            className="flex items-center justify-center min-h-[44px] px-6 border border-white/50 text-[11px] font-medium tracking-[0.12em] text-white hover:border-white hover:bg-white/10 transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] transform-gpu will-change-transform"
           >
             BECOME OUR PARTNER
-          </a>
+          </Link>
         </div>
 
-        <button
-          type="button"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-ivory lg:hidden"
-        >
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
       </nav>
-
-      {open && (
-        <div className="fixed inset-0 top-0 z-40 flex flex-col bg-ink px-8 pt-28 lg:hidden">
-          <ul className="flex flex-col gap-6">
-            {LINKS.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className="font-display text-3xl italic text-ivory"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a
-            href="#contact"
-            onClick={() => setOpen(false)}
-            className="mt-10 w-fit border border-brass px-6 py-3 text-[12px] font-semibold tracking-[0.1em] text-ivory transition-colors"
-          >
-            BOOK A SITE VISIT
-          </a>
-        </div>
-      )}
     </header>
   );
 }

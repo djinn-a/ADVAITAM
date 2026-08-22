@@ -26,37 +26,37 @@ const pillars = [
 
 export default function Philosophy() {
   return (
-    <section id="philosophy" className="relative overflow-hidden bg-cream px-6 py-12 sm:px-10 sm:py-16 lg:py-20 xl:py-24">
+    <section id="philosophy" className="relative overflow-hidden bg-cream px-[clamp(1.5rem,5vw,2.5rem)] py-[clamp(3rem,8vw,6rem)]">
       {/* Background Watermark - Responsive sizing */}
       <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-5">
-        <Leaf strokeWidth={0.5} className="text-brass w-[300px] h-[300px] sm:w-[450px] sm:h-[450px] lg:w-[600px] lg:h-[600px]" />
+        <Leaf strokeWidth={0.5} className="text-brass w-[clamp(300px,50vw,600px)] h-[clamp(300px,50vw,600px)]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-5xl text-center">
         {/* OUR PHILOSOPHY - Large responsive heading */}
-        <p className="font-display text-brass uppercase tracking-widest text-2xl sm:text-3xl lg:text-4xl mb-4 sm:mb-6">
+        <h2 className="font-display text-brass uppercase tracking-widest text-[clamp(1.5rem,3vw,2.25rem)] mb-[clamp(1rem,2vw,1.5rem)]">
           OUR PHILOSOPHY
-        </p>
-
-        {/* Main Heading - Responsive sizing */}
-        <h2 className="font-display leading-tight text-charcoal text-4xl sm:text-5xl lg:text-6xl">
-          Beyond Real Estate. We Create Legacies.
         </h2>
 
+        {/* Main Heading - Responsive sizing */}
+        <h3 className="font-display leading-[1.1] text-charcoal text-[clamp(2.25rem,5vw,3.75rem)]">
+          Beyond Real Estate. We Create Legacies.
+        </h3>
+
         {/* Pillars Wrapper - Responsive gap and margin */}
-        <div className="mx-auto mt-16 lg:mt-24 flex max-w-5xl flex-col gap-12 sm:flex-row sm:divide-x sm:divide-charcoal/10 sm:gap-0">
+        <div className="mx-auto mt-[clamp(4rem,8vw,6rem)] flex max-w-5xl flex-col gap-[clamp(3rem,6vw,0px)] sm:flex-row sm:divide-x sm:divide-charcoal/10 sm:gap-0">
           {pillars.map((p) => (
             <div key={p.title} className="group flex flex-1 flex-col items-center px-4 sm:px-6 text-center">
               {/* Icon - Responsive sizing via width/height classes */}
-              <span className="mb-6 lg:mb-8 flex text-brass transition-transform duration-300 group-hover:scale-110">
-                <p.icon strokeWidth={1.5} className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10" />
+              <span className="mb-[clamp(1.5rem,3vw,2rem)] flex text-brass transition-transform duration-300 group-hover:scale-110">
+                <p.icon strokeWidth={1.5} className="w-[clamp(1.5rem,3vw,2.5rem)] h-[clamp(1.5rem,3vw,2.5rem)]" />
               </span>
               {/* Pillar Title - Responsive sizing */}
-              <h6 className="font-display tracking-wide text-charcoal text-lg sm:text-xl lg:text-2xl">
+              <h4 className="font-display tracking-wide text-charcoal text-[clamp(1.125rem,2vw,1.5rem)]">
                 {p.title}
-              </h6>
+              </h4>
               {/* Pillar Copy - Responsive sizing */}
-              <p className="mx-auto mt-3 lg:mt-4 max-w-[200px] lg:max-w-[250px] leading-relaxed text-stone text-xs sm:text-sm lg:text-base">
+              <p className="mx-auto mt-[clamp(0.75rem,2vw,1rem)] max-w-[250px] leading-relaxed text-stone text-[clamp(0.75rem,1.5vw,1rem)]">
                 {p.copy}
               </p>
             </div>

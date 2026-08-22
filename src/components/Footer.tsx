@@ -4,15 +4,15 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-ink pt-12 pb-8 text-ivory">
-      <div className="mx-auto w-full max-w-[1400px] px-6 sm:px-10 md:px-16 lg:px-24">
+    <footer className="bg-ink pt-[clamp(3rem,6vw,4rem)] pb-[clamp(2rem,4vw,3rem)] text-ivory">
+      <div className="mx-auto w-full max-w-[1400px] px-[clamp(1.5rem,5vw,6rem)]">
         {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+        <div className="grid grid-cols-1 gap-[clamp(2rem,6vw,3rem)] md:grid-cols-2 lg:grid-cols-4 lg:gap-[clamp(1.5rem,3vw,2rem)]">
 
           {/* Column 1: Brand & Social */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-[clamp(1rem,3vw,1.5rem)]">
             <div>
-              <h3 className="font-display text-3xl text-brass tracking-wider">
+              <h3 className="font-display text-[clamp(1.5rem,3vw,2rem)] text-brass tracking-wider">
                 ADVAITAM
               </h3>
               <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.3em] text-brass-soft opacity-80">
@@ -22,18 +22,18 @@ export default function Footer() {
             <p className="text-[13px] leading-relaxed text-ivory/70 max-w-xs">
               Building nature-inspired luxury destinations that create lasting value for generations.
             </p>
-            <div className="flex items-center gap-4 mt-2">
-              <Link href="/" className="text-brass transition-colors p-2 rounded-full bg-ivory/5 hover:bg-ivory/10 hover:text-brass-soft">
-                <FiInstagram size={18} />
+            <div className="flex items-center gap-[clamp(0.75rem,2vw,1rem)] mt-2">
+              <Link href="/" aria-label="Instagram" className="text-brass transition-colors p-2 rounded-full bg-ivory/5 hover:bg-ivory/10 hover:text-brass-soft">
+                <FiInstagram size={18} aria-hidden="true" />
               </Link>
-              <Link href="/" className="transition-colors p-2 rounded-full bg-ivory/5 hover:bg-ivory/10 hover:text-brass-soft">
-                <FiFacebook size={18} />
+              <Link href="/" aria-label="Facebook" className="transition-colors p-2 rounded-full bg-ivory/5 hover:bg-ivory/10 hover:text-brass-soft">
+                <FiFacebook size={18} aria-hidden="true" />
               </Link>
-              <Link href="/" className="transition-colors p-2 rounded-full bg-ivory/5 hover:bg-ivory/10 hover:text-brass-soft">
-                <FiLinkedin size={18} />
+              <Link href="/" aria-label="LinkedIn" className="transition-colors p-2 rounded-full bg-ivory/5 hover:bg-ivory/10 hover:text-brass-soft">
+                <FiLinkedin size={18} aria-hidden="true" />
               </Link>
-              <Link href="/" className="transition-colors p-2 rounded-full bg-ivory/5 hover:bg-ivory/10 hover:text-brass-soft">
-                <FiYoutube size={18} />
+              <Link href="/" aria-label="YouTube" className="transition-colors p-2 rounded-full bg-ivory/5 hover:bg-ivory/10 hover:text-brass-soft">
+                <FiYoutube size={18} aria-hidden="true" />
               </Link>
             </div>
           </div>

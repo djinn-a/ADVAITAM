@@ -2,11 +2,11 @@ import Image from "next/image";
 
 export default function NatureInspired() {
   return (
-    <section className="relative w-full h-screen px-6 md:px-12 lg:px-24 2xl:px-32 bg-white overflow-hidden flex items-center">
-      <div className="max-w-[1600px] mx-auto w-full h-full py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-[auto_1fr] gap-6 lg:gap-10">
+    <section className="relative w-full min-h-[100svh] lg:h-[100svh] px-4 sm:px-6 md:px-12 lg:px-24 2xl:px-32 bg-white flex items-center py-16 lg:py-0 overflow-hidden lg:overflow-visible">
+      <div className="max-w-[1600px] mx-auto w-full h-full grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-[auto_1fr] gap-6 sm:gap-8 lg:gap-10 py-0 lg:py-16">
         
         {/* 1. Top-Left (Text Area) */}
-        <div className="lg:col-span-5 flex flex-col">
+        <div className="lg:col-span-5 flex flex-col justify-center">
           {/* Eyebrow */}
           <div className="flex items-center gap-4">
             <span className="eyebrow text-brass-soft tracking-[0.3em] text-[10px] md:text-xs">ADVAITAM</span>
@@ -14,21 +14,21 @@ export default function NatureInspired() {
           </div>
 
           {/* Heading */}
-          <h2 className="mt-2 xl:mt-4 text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-display text-charcoal leading-[1.1]">
+          <h2 className="mt-2 xl:mt-4 text-[clamp(2rem,6vw,2.5rem)] md:text-4xl lg:text-4xl xl:text-5xl font-display text-charcoal leading-[1.1]">
             Nature-Inspired<br />
             <span className="italic text-brass-soft font-light">Living Redefined</span>
           </h2>
 
           {/* Paragraph */}
-          <p className="mt-2 xl:mt-4 text-charcoal/80 text-xs md:text-sm xl:text-base leading-snug xl:leading-relaxed max-w-lg font-sans">
+          <p className="mt-3 xl:mt-4 text-charcoal/80 text-[clamp(0.875rem,2vw,1rem)] md:text-sm xl:text-base leading-relaxed max-w-lg font-sans">
             At Advaitam, we believe true luxury isn&apos;t just about what you own — it&apos;s about how you live. Set in the serene landscapes of Jim Corbett, our developments bring together nature, thoughtful design and modern comfort to create spaces that nourish your mind, body and future.
           </p>
 
           {/* Spacer to push tags to the bottom */}
-          <div className="flex-grow"></div>
+          <div className="flex-grow min-h-[2rem] lg:min-h-0"></div>
 
           {/* Tags */}
-          <div className="mt-2 xl:mt-4 mb-2 lg:mb-0 eyebrow text-[9px] md:text-[10px] xl:text-xs text-brass-soft tracking-[0.2em] flex gap-2 md:gap-3">
+          <div className="mt-4 lg:mt-2 xl:mt-4 mb-2 lg:mb-0 eyebrow text-[9px] md:text-[10px] xl:text-xs text-brass-soft tracking-[0.2em] flex flex-wrap gap-2 md:gap-3">
             <span>LUXURY</span>
             <span className="text-brass">/</span>
             <span>NATURE</span>
@@ -38,7 +38,7 @@ export default function NatureInspired() {
         </div>
 
         {/* 2. Top-Middle Image ("Exquisite Residences") */}
-        <div className="lg:col-span-4 relative w-full h-full min-h-[300px] lg:min-h-[0] rounded-3xl overflow-hidden group">
+        <div className="lg:col-span-4 relative w-full h-full min-h-[60svh] sm:min-h-[400px] lg:min-h-[0] rounded-3xl overflow-hidden group">
           <Image
             src="/images/nature-section/exquisite-residences.jpg"
             alt="Exquisite Residences"
@@ -56,7 +56,7 @@ export default function NatureInspired() {
         </div>
 
         {/* 3. Right Tall Image ("Pristine Surroundings") */}
-        <div className="lg:col-span-3 lg:row-span-2 relative w-full h-full min-h-[500px] lg:min-h-[0] rounded-3xl overflow-hidden group">
+        <div className="lg:col-span-3 lg:row-span-2 relative w-full h-full min-h-[70svh] sm:min-h-[500px] lg:min-h-[0] rounded-3xl overflow-hidden group">
           <Image
             src="/images/nature-section/pristine-surroundings.jpg"
             alt="Pristine Surroundings"
@@ -74,7 +74,7 @@ export default function NatureInspired() {
         </div>
 
         {/* 4. Bottom-Left Image ("Thoughtful Spaces") */}
-        <div className="lg:col-span-5 relative w-full h-full min-h-[300px] lg:min-h-[0] rounded-3xl overflow-hidden group">
+        <div className="lg:col-span-5 relative w-full h-full min-h-[60svh] sm:min-h-[400px] lg:min-h-[0] rounded-3xl overflow-hidden group">
           <Image
             src="/images/nature-section/thoughtful-spaces.jpg"
             alt="Thoughtful Spaces"
@@ -92,7 +92,7 @@ export default function NatureInspired() {
         </div>
 
         {/* 5. Bottom-Middle Image ("Curated Experiences") */}
-        <div className="lg:col-span-4 relative w-full h-full min-h-[300px] lg:min-h-[0] rounded-3xl overflow-hidden group">
+        <div className="lg:col-span-4 relative w-full h-full min-h-[60svh] sm:min-h-[400px] lg:min-h-[0] rounded-3xl overflow-hidden group">
           <Image
             src="/images/nature-section/curated-experiences.jpg"
             alt="Curated Experiences"

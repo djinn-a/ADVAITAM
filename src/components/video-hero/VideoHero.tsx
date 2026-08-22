@@ -84,7 +84,7 @@ export function VideoHero({
   return (
     <section
       ref={sectionRef}
-      className={`group/section relative w-full h-[40vh] min-h-[400px] sm:h-[50vh] sm:min-h-[450px] overflow-hidden bg-ink ${className}`}
+      className={`group/section relative w-full h-[clamp(400px,45vh,600px)] overflow-hidden bg-ink ${className}`}
     >
       {/* ========== NATIVE VIDEO OR FLOATING MINI-PLAYER ========== */}
       <div
@@ -130,7 +130,7 @@ export function VideoHero({
           {label}
         </p>
 
-        <h1 className="max-w-xl text-4xl leading-tight font-display text-ivory sm:text-5xl lg:text-6xl pointer-events-auto w-max">
+        <h1 className="max-w-xl text-[clamp(2.25rem,6vw,3.75rem)] leading-[1.1] font-display text-ivory pointer-events-auto w-max">
           {title}
           <br />
           <span className="italic text-brass-soft">{subtitle}</span>
@@ -141,14 +141,14 @@ export function VideoHero({
           <button
             type="button"
             onClick={togglePlay}
-            className={`pointer-events-auto mt-8 mb-4 md:mt-0 md:mb-0 self-start md:self-auto md:absolute md:top-1/2 md:left-[65%] lg:left-[60%] z-30 flex md:-translate-x-1/2 md:-translate-y-1/2 flex-row md:flex-col items-center gap-4 group transition-opacity duration-500 ${isPlaying ? 'opacity-0 group-hover/section:opacity-100' : 'opacity-100'}`}
+            className={`pointer-events-auto mt-[clamp(1rem,4vw,2rem)] self-start md:absolute md:top-1/2 md:left-[60%] z-30 flex md:-translate-x-1/2 md:-translate-y-1/2 flex-row md:flex-col items-center gap-4 group transition-opacity duration-500 ${isPlaying ? 'opacity-0 group-hover/section:opacity-100' : 'opacity-100'}`}
             aria-label={isPlaying ? "Pause video" : "Play video"}
           >
-            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-ivory/40 transition group-hover:border-ivory/80 sm:h-[72px] sm:w-[72px] bg-ink/10 backdrop-blur-sm">
+            <div className="flex h-[clamp(4rem,8vw,4.5rem)] w-[clamp(4rem,8vw,4.5rem)] items-center justify-center rounded-full border border-ivory/40 transition group-hover:border-ivory/80 bg-ink/10 backdrop-blur-sm">
               {isPlaying ? (
-                <Pause className="h-6 w-6 fill-ivory text-ivory sm:h-7 sm:w-7" />
+                <Pause className="h-[clamp(1.5rem,3vw,1.75rem)] w-[clamp(1.5rem,3vw,1.75rem)] fill-ivory text-ivory" />
               ) : (
-                <Play className="ml-1 h-6 w-6 fill-ivory text-ivory sm:h-7 sm:w-7" />
+                <Play className="ml-1 h-[clamp(1.5rem,3vw,1.75rem)] w-[clamp(1.5rem,3vw,1.75rem)] fill-ivory text-ivory" />
               )}
             </div>
             <span className="text-[10px] font-bold tracking-[0.15em] text-brass uppercase">
@@ -157,12 +157,12 @@ export function VideoHero({
           </button>
         )}
 
-        <p className="mt-2 md:mt-5 max-w-md text-[13px] leading-relaxed text-ivory/80 sm:text-sm pointer-events-auto">
+        <p className="mt-[clamp(0.5rem,2vw,1.25rem)] max-w-md text-[clamp(13px,1.5vw,14px)] leading-relaxed text-ivory/80 pointer-events-auto">
           {description}
         </p>
 
         {ctaText && (
-          <div className="mt-8 pointer-events-auto w-max">
+          <div className="mt-[clamp(1.5rem,4vw,2rem)] pointer-events-auto w-max">
             {ctaHref ? (
               <a
                 href={ctaHref}
