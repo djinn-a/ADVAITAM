@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { HiOutlineArrowDownTray } from "react-icons/hi2";
 
 export default function Cta() {
@@ -14,21 +15,21 @@ export default function Cta() {
 
         {/* Right Side: Buttons */}
         <div className="flex flex-col items-center gap-[clamp(1rem,2vw,1.5rem)] sm:flex-row">
-          <a
+          <Link
             href="#book"
             aria-label="Book a site visit"
             className="inline-flex h-12 items-center justify-center rounded-md bg-brass px-8 text-[12px] font-bold tracking-[0.15em] text-ink transition-all hover:bg-brass-soft"
           >
             BOOK A SITE VISIT
-          </a>
-          <a
+          </Link>
+          <Link
             href="#brochure"
             aria-label="Download our brochure"
             className="inline-flex h-12 items-center justify-center gap-3 rounded-md border border-ivory/20 px-8 text-[12px] font-bold tracking-[0.15em] text-ivory transition-all hover:bg-ivory/10"
           >
             DOWNLOAD BROCHURE
             <HiOutlineArrowDownTray size={16} />
-          </a>
+          </Link>
         </div>
         
       </div>
